@@ -24,7 +24,7 @@ import flatlc.inputrelations.FlatLCRandomResultSet;
 import flatlc.inputrelations.FlatLCResultSetA;
 import topk.EBNLTopK;
 import topk.ESFSTopK;
-import topk.HexagonTopK;
+import topk.TkLS;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -65,7 +65,7 @@ public class AlgorithmTest {
         arrayInput = input.getElements();
 
         BTGDataA btg = new BTGDataArray(new BTG(maxLevels));
-        HexagonTopK hex = new HexagonTopK(arrayInput.iterator(), btg, top_k);
+        TkLS hex = new TkLS(arrayInput.iterator(), btg, top_k);
 
         bmoSize = countResult(hex);
         System.out.println("bmoSize: " + bmoSize);
@@ -156,13 +156,6 @@ public class AlgorithmTest {
      */
     private static int countResult(Iterator cursor) {
         int counter = 0;
-//        boolean print = false;
-//        try {
-//            print = AlgorithmConfigReader.getInstance().getBooleanProperty
-//                    ("PRINT_OBJECTS");
-//        } catch (PreferenceException e) {
-//            e.printStackTrace();
-//        }
 
         Object o = null;
         while (cursor.hasNext()) {

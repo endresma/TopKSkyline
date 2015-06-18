@@ -32,7 +32,7 @@ import java.util.Iterator;
  * The abstract super class of all HexagonInMemoryFLC_Original algorithms using
  * different data structures for the BTG.
  */
-public abstract class AbstractHexagonInMemoryFLC<T extends Iterator<Object>>
+public abstract class AbstractLS<T extends Iterator<Object>>
         implements Iterator {
 
 
@@ -78,14 +78,14 @@ public abstract class AbstractHexagonInMemoryFLC<T extends Iterator<Object>>
      */
 
 
-    protected AbstractHexagonInMemoryFLC() {
+    protected AbstractLS() {
 
     }
 
-    protected AbstractHexagonInMemoryFLC(final T input,
+    protected AbstractLS(final T input,
 //                                         final ParetoPreference pref,
-                                         final BTGDataA btg,
-                                         final boolean usePruning) {
+                         final BTGDataA btg,
+                         final boolean usePruning) {
         this.input = input;
 //        this.preference = pref;
         this.btg = btg;

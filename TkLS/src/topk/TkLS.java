@@ -31,7 +31,7 @@ import java.util.List;
  * @author endresma
  */
 
-public class HexagonTopK extends AbstractHexagonInMemoryFLC {
+public class TkLS extends AbstractLS {
 
 
     /**
@@ -56,7 +56,7 @@ public class HexagonTopK extends AbstractHexagonInMemoryFLC {
     private int returnedTupleNumber = 0;
 
 
-    public HexagonTopK(Iterator input, final BTGDataA btg, int topK)  {
+    public TkLS(Iterator input, final BTGDataA btg, int topK)  {
 
         super(input, btg, false);
         this.topK = topK;

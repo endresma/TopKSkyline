@@ -1,40 +1,27 @@
+/*
+ * Copyright (c) 2015. markus endres, timotheus preisinger
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package mdc;
 
 
-/**
- * A metadata-cursor realizes a cursor additionally providing metadata. It
- * extends the interface {@link xxl.core.cursors.Cursor} and
- * {@link xxl.core.util.MetaDataProvider}. So the main difference between a
- * regular cursor and a metadata-cursor lies in the provision of the
- * <tt>getMetaData</tt> method, which returns metadata information about the
- * elements this metadata-cursor delivers. The return value of the
- * <tt>getMetaData</tt> method can be an arbitrary kind of metadata information,
- * e.g., relational metadata information, therefore it is of type
- * {@link Object}.
- *
- * <p>When using a metadata-cursor, it has to be guaranteed, that all elements
- * contained in this metadata-cursor refer to the same metadata information.
- * That means, every time <tt>getMetaData</tt> is called on a metadata-cursor,
- * it should return the same metadata information. Generally this method is
- * called only once.</p>
- *
 
- */
 public interface MetaDataCursor extends Cursor {
 
-	/**
-	 * Returns the metadata information for this metadata-cursor. The return
-	 * value of this method can be an arbitrary kind of metadata information,
-	 * e.g., relational metadata information, therefore it is of type
-	 * {@link Object}. When using a metadata-cursor, it has to be
-	 * guaranteed, that all elements contained in this metadata-cursor refer to
-	 * the same metadata information. That means, every time <tt>getMetaData</tt>
-	 * is called on a metadata-cursor, it should return exactly the same metadata
-	 * information.
-	 *
-	 * @return an object representing metadata information for this
-	 *         metadata-cursor.
-	 */
-	public abstract Object getMetaData();
+
+	Object getMetaData();
 
 }

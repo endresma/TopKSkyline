@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2015. markus endres, timotheus preisinger
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package flatlc.levels;
 
 import java.io.Serializable;
@@ -67,8 +84,6 @@ import java.io.Serializable;
  * @author Timotheus Preisinger
  * @author endresma
  * @version 1.0, 2006-12-12
- * @see preference.engine.levels.FlatLevelManager
- * @see preference.engine.levels.LevelCombination
  */
 
 public class FlatLevelCombination implements Serializable {
@@ -76,10 +91,8 @@ public class FlatLevelCombination implements Serializable {
     public static final int EQUAL = 0;
     public static final int GREATER = 1;
     public static final int LESS = -1;
-    public static final int SUBSET = -4;
     public static final int SUBSTITUTABLE = 2;
     @Deprecated
-    public static final int UNDEFINED = -3;
     public static final int UNRANKED = -2;
 
     /**
@@ -695,14 +708,14 @@ public class FlatLevelCombination implements Serializable {
      * Computes a unique identifier for this level combination. Therefore, the
      * maximum level values of all contained base preferences are used as bases
      * for a numerical system.
-     * <p/>
+     * <p>
      * Example: We have two base preferences with maximum level values m1 = 3,
      * m2 = 4. A node c = (c1, c2) has the following unique identifier:
-     * <p/>
+     * <p>
      * <code>c2 + (m2 + 1) * c1</code>.
-     * <p/>
+     * <p>
      * The node (2, 1) has the unique identifier <code>1 + 5 * 2 = 11</code>.
-     * <p/>
+     * <p>
      * Beginning from the last value, each level is added to the overall sum
      * after being multiplied with the maximum level value plus one of all level
      * value following to it. In our example, 1 is the rightmost level value. It
@@ -819,60 +832,6 @@ public class FlatLevelCombination implements Serializable {
         return this.instanceNo;
     }
 
-    /**
-     * Returns a time stamp of the object. This timestamp is used by BNL
-     * algorithms to determine the order of reading (and writing to disk) of
-     * tuples
-     *
-     * @return time stamp
-     */
-    public int getTimeStamp() {
-        return this.timeStamp;
-    }
-
-    /**
-     * Sets a time stamp of the object. This timestamp is used by BNL algorithms
-     * to determine the order of reading (and writing to disk) of tuples
-     *
-     * @param value the new time stamp;
-     */
-    public void setTimeStamp(int value) {
-        this.timeStamp = value;
-    }
-
-    public FlatLCPruningRegion getLeftPruningRegion() {
-        return getPruningRegion(true);
-    }
-
-    public FlatLCPruningRegion getRightPruningRegion() {
-        return getPruningRegion(false);
-    }
-
-    public FlatLCPruningRegion getPruningRegion(boolean left) {
-
-        int leftPL = -1;
-        int rightPL = -1;
-        if (splitPosition > 0) {
-            leftPL = getLeftPruningLevel();
-            rightPL = getRightPruningLevel();
-            if (left) {
-                if (splitPosition == level.length - 1)
-                    return new FlatLCPruningRegion(leftPL, rightPL - 1);
-            } else if (!left) {
-                if (splitPosition == 1)
-                    return new FlatLCPruningRegion(leftPL - 1, rightPL);
-            }
-        } else { // NO_SP
-            leftPL = rightPL = getPruningLevel();
-        }
-
-        // NO_SP
-        return new FlatLCPruningRegion(leftPL, rightPL);
-    }
-
-    public FlatLCPartialLevels getPartialLevels() {
-        return new FlatLCPartialLevels(leftOverallLevel(), rightOverallLevel());
-    }
 
     protected int leftOverallLevel() {
         int lolvl = 0;
@@ -890,80 +849,5 @@ public class FlatLevelCombination implements Serializable {
         return rolvl;
     }
 
-    public int getLeftPruningLevel() {
-
-        // Basispraeferenz mit dem kleinsten Abstand zu ihrem Maximum finden
-        // Gleichzeitig alle Level-Maxima aufaddieren
-        int min = Integer.MAX_VALUE;
-        int sum = 0, curVal, valSum = 0;
-
-        if (level.length == 1) {
-            return level[0];
-        }
-
-        if (splitPosition == 1) {
-            return level[0];
-        }
-
-        for (int i = 0; i < splitPosition; i++) {
-            sum += maxLevels[i];
-            double curLvl = level[i];
-            curVal = (int) (maxLevels[i] - curLvl);
-            valSum += curVal;
-            if (curLvl > 0 && min > curVal) {
-                min = curVal;
-            }
-        }
-
-        // Minimum abziehen
-        sum -= min + 1;
-        return sum;
-    }
-
-    public int getRightPruningLevel() {
-
-        // Basispraeferenz mit dem kleinsten Abstand zu ihrem Maximum finden
-        // Gleichzeitig alle Level-Maxima aufaddieren
-        int min = Integer.MAX_VALUE;
-        int sum = 0, curVal, valSum = 0;
-
-        if (level.length == 1) {
-            return level[0];
-        }
-
-        if (splitPosition == level.length - 1) {
-            return level[level.length - 1];
-        }
-
-        for (int i = splitPosition; i < level.length; i++) {
-            sum += maxLevels[i];
-            int curLvl = level[i];
-            curVal = maxLevels[i] - curLvl;
-            valSum += curVal;
-            if (curLvl > 0 && min > curVal) {
-                min = curVal;
-            }
-        }
-
-        // Minimum abziehen
-        sum -= min + 1;
-        return sum;
-    }
-
-    public void setSplitPosition(int splitPosition) {
-        this.splitPosition = splitPosition;
-    }
-
-    public int getColumnCount() {
-        return value.length;
-    }
-
-    public Object[] getObjectArray() {
-        return value;
-    }
-
-    public int getInstanceNo() {
-        return this.instanceNo;
-    }
 
 }
