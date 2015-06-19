@@ -20,11 +20,13 @@ package test;
 import btg.BTG;
 import btg.BTGDataA;
 import btg.BTGDataArray;
-import flatlc.inputrelations.FlatLCRandomResultSet;
-import flatlc.inputrelations.FlatLCResultSetA;
+import flatlc.inputrelations.*;
+import flatlc.realdata.FlatLCFileDataGenerator;
 import topk.EBNLTopK;
 import topk.ESFSTopK;
 import topk.TkLS;
+import util.GnuplotExporter;
+import util.Stopwatch;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -39,113 +41,211 @@ public class AlgorithmTest {
     public static void main(String[] args) {
 
 
-        int top_k = 15;
-        int n = 10000;
-        int maxLevels[] = new int[]{2, 3, 5, 10, 100};
+        // anti, corr, ind, gaussian, zillow, nba, house, weather
+        // zillow_data.txt, nba_data.txt, house_data.txt
+        String distribution = "ind";
+        int top_k = 100;
 
-        FlatLCResultSetA input = new FlatLCRandomResultSet(n, maxLevels, true);
+        int n[] = new int[]{100000,500000,1000000};
+        int maxLevels[] = new int[]{10,100,1000};
 
-        /** EBNL */
-        ArrayList<Object> arrayInput = input.getElements();
 
-        EBNLTopK algorithm = new EBNLTopK(arrayInput, top_k);
+        /** config for real world data */
+        // Zillow
+        // int[] n = new int[]{2236252};
+        // int maxLevels[] = new int[]{10, 10, 36, 45};
 
-        int bmoSize = countResult(algorithm);
-        System.out.println("bmoSize: " + bmoSize);
+        // NBA
+        //        int[] n = new int[]{17265};
+        //        int maxLevels[] = new int[]{10, 10, 10, 10, 10};
 
-        /** ESFS */
-        input.reset();
-        arrayInput = input.getElements();
-        algorithm = new ESFSTopK(arrayInput, top_k);
-        bmoSize = countResult(algorithm);
-        System.out.println("bmoSize: " + bmoSize);
+        // House
+        // int[] n = new int[]{};
+        // int maxLevels[] = new int[]{10000,10000,10000,10000,10000,10000};
 
-        /** TkLS */
-        input.reset();
-        arrayInput = input.getElements();
 
-        BTGDataA btg = new BTGDataArray(new BTG(maxLevels));
-        TkLS hex = new TkLS(arrayInput.iterator(), btg, top_k);
+        String[] algorithms = new String[]{"EBNL", "ESFS", "TkLS"};
 
-        bmoSize = countResult(hex);
-        System.out.println("bmoSize: " + bmoSize);
 
+        runtime_tuples(algorithms, distribution, n, maxLevels, top_k);
 
     }
 
 
-//    /**
-//     * Execute the algorithm Extended-BNL EBNLTopK.
-//     *
-//     * @param input
-//     * @param pareto
-//     * @throws PreferenceException
-//     */
-//    public static ResultInfo runEBnlTopK(FlatLCResultSetA input, ParetoPreference pareto,
-//                                         int topk) throws PreferenceException {
-//
-//
-//        ArrayList<Object> arrayInput = input.getElements();
-//
-//        Stopwatch sw = new Stopwatch();
-//        EBNLTopK algorithm = new EBNLTopK(arrayInput, pareto, topk);
-//
-//        int bmoSize = countResult(algorithm);
-//        long runtime = sw.getElapsedNanoSecTime();
-//
-//        return new ResultInfo(runtime, bmoSize);
-//
-//
-//    }
+    /**
+     * EBNL TopK algorithm
+     */
+    public static long runEBNLTopK(ArrayList<Object> input, int top_k) {
+        System.out.println("Run EBNL");
+        Stopwatch sw = new Stopwatch();
+        EBNLTopK algorithm = new EBNLTopK(input, top_k);
+        int skylineSize = countResult(algorithm);
+        long runtime = sw.getElapsedNanoSecTime();
+
+        System.out.println("Runtime: " + nanoToSeconds(runtime));
+        System.out.println("skylineSize: " + skylineSize);
+
+        return runtime;
 
 
-//    /**
-//     * Execute the algorithm Extended-SFS ESFSTopK.
-//     *
-//     * @param input
-//     * @param pareto
-//     * @throws PreferenceException
-//     */
-//    public static ResultInfo runESFSTopK(FlatLCResultSetA input, ParetoPreference pareto,
-//                                         int topk) throws PreferenceException {
-//
-//
-//        ArrayList<Object> arrayInput = input.getElements();
-//
-//        Stopwatch sw = new Stopwatch();
-//        ESFSTopK algorithm = new ESFSTopK(arrayInput, pareto, topk);
-//
-//        int bmoSize = countResult(algorithm);
-//        long runtime = sw.getElapsedNanoSecTime();
-//
-//        return new ResultInfo(runtime, bmoSize);
-//
-//
-//    }
-//
-//
-//    /**
-//     * Execute the algorithm HexagonTopK to evaluate the top-k BMO objects based on
-//     * FlatLevelCombinations.
-//     *
-//     * @param input
-//     * @param pareto
-//     * @throws PreferenceException
-//     */
-//    public static ResultInfo runHexagonTopK(FlatLCResultSetA input, ParetoPreference pareto, int topk) throws PreferenceException {
-//
-//        Stopwatch sw = new Stopwatch();
-//        BTGDataA btg = new BTGDataArray(new BTG(pareto));
-//        System.out.println("create BTGData: " + sw.getElapsedMillSecTime());
-//
-//        HexagonTopK algorithm = new HexagonTopK(input, pareto, btg, topk);
-//
-//        int bmoSize = countResult(algorithm);
-//        long runtime = sw.getElapsedNanoSecTime();
-//
-//        return new ResultInfo(runtime, bmoSize);
-//
-//    }
+    }
+
+    /**
+     * ESFS TopK algorithm
+     */
+    public static long runESFSTopK(ArrayList<Object> input, int top_k) {
+        System.out.println("Run ESFS");
+
+        Stopwatch sw = new Stopwatch();
+        ESFSTopK algorithm = new ESFSTopK(input, top_k);
+        int skylineSize = countResult(algorithm);
+        long runtime = sw.getElapsedNanoSecTime();
+
+        System.out.println("Runtime: " + nanoToSeconds(runtime));
+        System.out.println("skylineSize: " + skylineSize);
+
+        return runtime;
+    }
+
+
+    /**
+     * TkLS TopK algorithm based on Lattice Skyline / Hexagon
+     */
+    public static long runTkLS(ArrayList<Object> input, int top_k, int[] maxLevels) {
+        System.out.println("Run TkLS");
+
+        Stopwatch sw = new Stopwatch();
+        BTGDataA btg = new BTGDataArray(new BTG(maxLevels));
+        TkLS algorithm = new TkLS(input.iterator(), btg, top_k);
+        int skylineSize = countResult(algorithm);
+        long runtime = sw.getElapsedNanoSecTime();
+
+        System.out.println("Runtime: " + nanoToSeconds(runtime));
+        System.out.println("skylineSize: " + skylineSize);
+
+        return runtime;
+    }
+
+
+    //    /**
+    //     * Execute the algorithm Extended-BNL EBNLTopK.
+    //     *
+    //     * @param input
+    //     * @param pareto
+    //     * @throws PreferenceException
+    //     */
+    //    public static ResultInfo runEBnlTopK(FlatLCResultSetA input, ParetoPreference pareto,
+    //                                         int topk) throws PreferenceException {
+    //
+    //
+    //        ArrayList<Object> arrayInput = input.getElements();
+    //
+    //        Stopwatch sw = new Stopwatch();
+    //        EBNLTopK algorithm = new EBNLTopK(arrayInput, pareto, topk);
+    //
+    //        int bmoSize = countResult(algorithm);
+    //        long runtime = sw.getElapsedNanoSecTime();
+    //
+    //        return new ResultInfo(runtime, bmoSize);
+    //
+    //
+    //    }
+
+
+    //    /**
+    //     * Execute the algorithm Extended-SFS ESFSTopK.
+    //     *
+    //     * @param input
+    //     * @param pareto
+    //     * @throws PreferenceException
+    //     */
+    //    public static ResultInfo runESFSTopK(FlatLCResultSetA input, ParetoPreference pareto,
+    //                                         int topk) throws PreferenceException {
+    //
+    //
+    //        ArrayList<Object> arrayInput = input.getElements();
+    //
+    //        Stopwatch sw = new Stopwatch();
+    //        ESFSTopK algorithm = new ESFSTopK(arrayInput, pareto, topk);
+    //
+    //        int bmoSize = countResult(algorithm);
+    //        long runtime = sw.getElapsedNanoSecTime();
+    //
+    //        return new ResultInfo(runtime, bmoSize);
+    //
+    //
+    //    }
+    //
+    //
+    //    /**
+    //     * Execute the algorithm HexagonTopK to evaluate the top-k BMO objects based on
+    //     * FlatLevelCombinations.
+    //     *
+    //     * @param input
+    //     * @param pareto
+    //     * @throws PreferenceException
+    //     */
+    //    public static ResultInfo runHexagonTopK(FlatLCResultSetA input, ParetoPreference pareto, int topk) throws PreferenceException {
+    //
+    //        Stopwatch sw = new Stopwatch();
+    //        BTGDataA btg = new BTGDataArray(new BTG(pareto));
+    //        System.out.println("create BTGData: " + sw.getElapsedMillSecTime());
+    //
+    //        HexagonTopK algorithm = new HexagonTopK(input, pareto, btg, topk);
+    //
+    //        int bmoSize = countResult(algorithm);
+    //        long runtime = sw.getElapsedNanoSecTime();
+    //
+    //        return new ResultInfo(runtime, bmoSize);
+    //
+    //    }
+
+
+    /**
+     * Generate input data based on
+     * anti, corr, ind, gaussian, zillow, nba, house, weather
+     */
+    public static FlatLCResultSetA generateInput(String distribution, int inputSize, int[] maxLevels) {
+        System.out.println("\n********************************************************************************");
+        System.out.println("Generate data: " + distribution);
+
+        //        System.out.println("Generate " + inputSize + " tuples");
+        //        System.out.println("Generate Input Data Set of size: "                + this.getDataSize() + "");
+
+        FlatLCResultSetA input = null;
+        // generate input in memory, do not write to file
+        boolean inMemory = true;
+
+        switch (distribution) {
+            case "anti":
+                input = new FlatLCAntiCorrelatedResultSet(inputSize, maxLevels, inMemory);
+                break;
+            case "corr":
+                input = new FlatLCCorrelatedResultSet(inputSize, maxLevels, inMemory);
+                break;
+            case "ind":
+                input = new FlatLCRandomResultSet(inputSize, maxLevels, inMemory);
+                break;
+            case "guassian":
+                input = new FlatLCGaussianResultSet(inputSize, maxLevels, inMemory);
+                break;
+            default:
+                // in case of real world data read it from file and generate a FlatLCFileDataGenerator object
+                input = new FlatLCFileDataGenerator(distribution, inputSize, maxLevels);
+                //                throw new RuntimeException("input data not supported: " + distribution);
+        }
+
+        return input;
+
+
+    }
+
+    /**
+     * converts nano seconds to seconds
+     */
+    public static double nanoToSeconds(long nano) {
+        return nano / 1000. / 1000. / 1000.;
+    }
 
 
     /**
@@ -160,16 +260,84 @@ public class AlgorithmTest {
         Object o = null;
         while (cursor.hasNext()) {
             o = cursor.next();
-
-
-            System.out.println(o.toString());
-
-
+            //            System.out.println(o.toString());
             counter++;
         }
 
-        cursor = null;
+
         return counter;
     }
+
+
+    /**
+     * test runtimes for different data sets, distributions, etc.
+     */
+    public static void runtime_tuples(String[] algorithms, String distribution, int[] inputSize, int[] maxLevels, int top_k) {
+
+
+        String xLabel = "Input Size";
+        String yLabel = "Runtime (sec)";
+        String[] xylabels = {xLabel, yLabel};
+        String dirPath = "out/";
+
+
+        StringBuffer toWrite;
+        GnuplotExporter gpx = null;
+
+
+        gpx = new GnuplotExporter(dirPath, "datFile", "pltFile", algorithms, xylabels, new String[]{distribution, "Runtime"});
+
+        // for all input sizes
+        for (int iSize : inputSize) {
+
+
+            FlatLCResultSetA input = generateInput(distribution, iSize, maxLevels);
+
+            toWrite = new StringBuffer();
+            toWrite.append(iSize);
+
+
+            /** EBNL */
+            ArrayList<Object> arrayInput = input.getElements();
+            long runtimeEBENL = runEBNLTopK(arrayInput, top_k);
+
+            toWrite.append('\t');
+            toWrite.append(nanoToSeconds(runtimeEBENL));
+
+            System.gc();
+
+            /** ESFS */
+            input.reset();
+            arrayInput = input.getElements();
+            long runtimeESFS = runESFSTopK(arrayInput, top_k);
+
+            toWrite.append('\t');
+            toWrite.append(nanoToSeconds(runtimeESFS));
+
+            System.gc();
+
+
+            /** TkLS */
+            input.reset();
+            arrayInput = input.getElements();
+            long runtimeTkLS = runTkLS(arrayInput, top_k, maxLevels);
+
+            toWrite.append('\t');
+            toWrite.append(nanoToSeconds(runtimeTkLS));
+
+            System.gc();
+
+            gpx.write(toWrite.toString());
+            toWrite = null;
+
+        }
+
+        gpx.close();
+        gpx.plot();
+        gpx.showRuntimeDiagram();
+
+
+    }
+
 
 }

@@ -210,7 +210,7 @@ public class EBNLTopK implements Iterator {
 
 //        return P;
 
-        long begin = System.currentTimeMillis();
+//        long begin = System.currentTimeMillis();
         ArrayList<Object> topk_result = new ArrayList<>();
 
         for (List<Object> out : P) {
@@ -220,8 +220,8 @@ public class EBNLTopK implements Iterator {
             }
         }
 
-        long end = System.currentTimeMillis();
-        System.out.println("topk_result: " + (end - begin) + "ms");
+//        long end = System.currentTimeMillis();
+//        System.out.println("topk_result: " + (end - begin) + "ms");
 
         result = topk_result.iterator();
 

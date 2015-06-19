@@ -36,12 +36,6 @@ import java.util.Scanner;
  */
 public class FlatLCFileDataGenerator extends FlatLCResultSetA {
 
-    //    private String prefix;
-//    private final String NBA = "5d-nba-17265.txt";
-//    private final String HOU = "6d-hou-127931.txt";
-//    private String ZILLOW = "zillow_mod_Scalagon.txt";
-//    private final String TEST = "test.txt";
-
 
     /**
      * meta data object
@@ -66,41 +60,7 @@ public class FlatLCFileDataGenerator extends FlatLCResultSetA {
     private int[] multIDs;
 
 
-//    public FlatLCFileDataGenerator(String filename, int inputSize, int[] maxValues) {
-//        this(filename, maxValues.length, inputSize);
-//
-//    }
 
-
-//    public FlatLCFileDataGenerator(String filename, int col, int rows) {
-//        this.dataset = filename;
-//        this.filename = getFilePath(filename);
-//
-//        // remove ID column, i.e. the first column of the data set
-////        this.col = maxLevels.length;
-////        this.rows = inputSize;
-//        this.maxValues = maxValues;
-//        this.col = col - 1;
-//        this.rows = rows;
-//
-////        this.minLevels = new double[col];
-//
-//        // create multIDs
-//        // compute the multiplicators
-//        // note that the first component is the ID of the tuple
-////        int len = this.col;
-////        this.maxValues = new int[len];
-//
-//        readRawData();
-//
-////        setMinMax();
-////        this.multIDs = new int[col];
-////        this.multIDs[col - 1] = 1;
-////        for (int i = col; --i > 0; ) {
-////            this.multIDs[i - 1] = this.multIDs[i] * (maxValues[i] + 1);
-////        }
-//        convert();
-//    }
 
     public FlatLCFileDataGenerator(String filename, int inputSize, int[] maxValues) {
 
@@ -108,19 +68,10 @@ public class FlatLCFileDataGenerator extends FlatLCResultSetA {
         this.filename = getFilePath(filename);
 
         // remove ID column, i.e. the first column of the data set
-//        this.col = maxLevels.length;
-//        this.rows = inputSize;
         this.maxValues = maxValues;
         this.col = maxValues.length;
         this.rows = inputSize;
 
-//        this.minLevels = new double[col];
-
-        // create multIDs
-        // compute the multiplicators
-        // note that the first component is the ID of the tuple
-//        int len = this.col;
-//        this.maxValues = new int[len];
 
         this.multIDs = new int[col];
         this.multIDs[col - 1] = 1;
@@ -143,9 +94,9 @@ public class FlatLCFileDataGenerator extends FlatLCResultSetA {
 
             OS = System.getProperty("os.name");
             if(OS.equals("Mac OS X")) {
-                prefix = canonicalPath + "/FlatLCDataGenerator/data/";
+                prefix = canonicalPath + "/DataGenerator/data/";
             } else {
-                prefix = canonicalPath + "/.." + "/FlatLCDataGenerator/data/";
+                prefix = canonicalPath + "/.." + "/DataGenerator/data/";
             }
 
 
@@ -199,24 +150,13 @@ public class FlatLCFileDataGenerator extends FlatLCResultSetA {
     }
 
 
-//    public String printMaxValues() {
-//        StringBuffer sb = new StringBuffer();
-//        sb.append("[");
-//        for (int i : maxValues) {
-//            sb.append(i);
-//            sb.append(",");
-//        }
-//        sb.append("]");
-//        return sb.toString();
-//    }
-
     private void readRawData() {
         Scanner sc = this.getScanner();
 
         // read raw data into ArrayList
-        for (int i = 0; i < rows; ++i) {
+        for (int i = 0; i < rows && sc.hasNext(); ++i) {
 //            System.out.println("row: " + i);
-            sc.nextInt();
+//            sc.nextInt();
 //            System.out.println(i);
             int[] tuple = new int[col];
             for (int j = 0; j < col; ++j) {
@@ -231,75 +171,11 @@ public class FlatLCFileDataGenerator extends FlatLCResultSetA {
             sc.nextLine();
         }
 
-//        find min/max for each column
-//        setMinMax();
 
     }
 
-//
-//    private void printObject(int[] tuple) {
-//        for (int i = 0; i < tuple.length; i++) {
-//            System.out.print(tuple[i] + " ");
-//        }
-//        System.out.println();
-//    }
 
 
-//    /**
-//     * set min and max values for the data set
-//     * This is equal to set the maxLevels
-//     */
-//    private void setMinMax() {
-//
-//        int[] tuple;
-//
-////        double[] min = new double[col];
-//        // note that the first element is the ID
-//        int[] max = new int[col];
-//
-//        for (int i = 0; i < rawData.size(); i++) {
-//            tuple = rawData.get(i);
-////            setMin(min, tuple);
-//            setMax(max, tuple);
-//        }
-//
-//        this.maxValues = max;
-//    }
-//
-//    private void setMin(double[] min, double[] tuple) {
-//        if (min.length != tuple.length)
-//            throw new RuntimeException("Wrong size of arrays");
-//        for (int i = 0; i < min.length; i++) {
-//            min[i] = min[i] < tuple[i] ? min[i] : tuple[i];
-//        }
-//    }
-//
-//
-//    // note that the first component is the ID
-//    private void setMax(int[] max, int[] tuple) {
-//        if (max.length != tuple.length)
-//            throw new RuntimeException("Wrong size of arrays");
-//        for (int i = 0; i < max.length; i++) {
-//            max[i] = max[i] > tuple[i] ? max[i] : tuple[i];
-//        }
-//
-//        System.out.println("Maximum Values: ");
-//        printObject(max);
-//
-//    }
-
-//    public float[] generate(int d, int n) {
-//        Scanner sc = this.getScanner();
-//        float[] data = new float[d*n];
-//        for (int row = 0; row < n; ++row) {
-//            sc.nextInt();
-//            for (int col = 0; col < d; ++col) {
-//                data[row*d + col] = sc.nextFloat();
-//            }
-//            sc.nextLine();
-//        }
-//        return data;
-//    }
 
 
     @Override
@@ -380,64 +256,6 @@ public class FlatLCFileDataGenerator extends FlatLCResultSetA {
         return true;
     }
 
-
-//    public void printResult() {
-//        int counter = 0;
-//        while (hasNext()) {
-//            next();
-//            counter++;
-//        }
-//        System.out.print("File: " + dataset + " --- ");
-//        System.out.print("counter: " + counter + " --- ");
-//        System.out.print(printMaxValues());
-//    }
-//
-//    public void printHighValues() {
-//
-//        int counter = 0;
-//        for (int i = 0; i < rawData.size(); i++) {
-//            int[] val = rawData.get(i);
-//            if(val[2] > 50000)             {
-//                System.out.println(val[2]);
-//                counter++;
-//            }
-//        }
-//
-//        System.out.println("Anzahl: " + counter);
-//
-//    }
-
-
-//    public static void main(String[] args) {
-//
-//        // Test
-////        FlatLCFileDataGenerator flc = new FlatLCFileDataGenerator("test", 7, 5);
-////        flc.printResult();
-////
-////        System.out.println("+++++++++++++++++++++++");
-////
-////        // NBA
-////        flc = new FlatLCFileDataGenerator("nba", 6, 17265);
-////        flc.printResult();
-////
-////        System.out.println("+++++++++++++++++++++++");
-////
-////        // HOU
-////        flc = new FlatLCFileDataGenerator("hou", 7, 127931);
-////        flc.printResult();
-////
-////        System.out.println("+++++++++++++++++++++++");
-//
-//
-//        // ZILLOW
-//        FlatLCFileDataGenerator flc = new FlatLCFileDataGenerator("zillow", 6, 2245086);
-////        flc.printHighValues();
-//        flc.printResult();
-//
-//        System.out.println("+++++++++++++++++++++++");
-//
-//
-//    }
 
 
 }

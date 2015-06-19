@@ -70,10 +70,10 @@ public class ESFSTopK extends EBNLTopK {
 //        int idx = 0;
 
         // topological sort following Godfrey: Skyline with Presorting
-        long begin = System.currentTimeMillis();
+//        long begin = System.currentTimeMillis();
         TopSort.sort(R);
-        long end = System.currentTimeMillis();
-        System.out.println("SFS sort: " + (end - begin) + "ms");
+//        long end = System.currentTimeMillis();
+//        System.out.println("SFS sort: " + (end - begin) + "ms");
 
         boolean cont;
         ArrayList<List<Object>> P = new ArrayList<>();
@@ -143,7 +143,7 @@ public class ESFSTopK extends EBNLTopK {
 //            e.printStackTrace();
 //        }
 
-        begin = System.currentTimeMillis();
+//        begin = System.currentTimeMillis();
         ArrayList<Object> topk_result = new ArrayList<>();
 
         for (List<Object> out : P) {
@@ -153,8 +153,8 @@ public class ESFSTopK extends EBNLTopK {
             }
         }
 
-        end = System.currentTimeMillis();
-        System.out.println("topk_result: " + (end - begin) + "ms");
+//        end = System.currentTimeMillis();
+//        System.out.println("topk_result: " + (end - begin) + "ms");
         result = topk_result.iterator();
 
     }

@@ -31,8 +31,8 @@ import java.util.List;
  * @author endresma
  */
 
-public class TkLS extends AbstractLS {
 
+public class TkLS extends AbstractLS {
 
     /**
      * result set
