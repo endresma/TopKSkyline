@@ -41,13 +41,28 @@ public class AlgorithmTest {
     public static void main(String[] args) {
 
 
+        // Example 1, Figure 6 in the paper
+        // Hotel search, low-card domain [3,4,4], input sizes {50,100,15}
+        // top-k = 5
+        // anti, corr, ind data
+
+
+        // TODO: House, NBA
+        // und weitere Experimente
+        // anti, corr, ind, zillow, nba, house, weather (falls vorhanden)
+        // verschiedene Dimensionen, verschiedenes k, verschieden Anzahl Objekte
+
         // anti, corr, ind, gaussian, zillow, nba, house, weather
         // zillow_data.txt, nba_data.txt, house_data.txt
         String distribution = "ind";
-        int top_k = 100;
+        int top_k = 25000;
 
-        int n[] = new int[]{100000,500000,1000000};
-        int maxLevels[] = new int[]{10,100,1000};
+        int n[] = new int[]{50000};
+        int maxLevels[] = new int[]{2,3,5,10,100};
+
+        // 3d: {2,3,5}
+        // 5d: {2,3,5,10,100}
+        // 7d: {2,3,5,10,10,10,100}
 
 
         /** config for real world data */
@@ -60,8 +75,9 @@ public class AlgorithmTest {
         //        int maxLevels[] = new int[]{10, 10, 10, 10, 10};
 
         // House
-        // int[] n = new int[]{};
-        // int maxLevels[] = new int[]{10000,10000,10000,10000,10000,10000};
+        //         int[] n = new int[]{127931};
+        //         int maxLevels[] = new int[]{10000,10000,10000,10000,10000,10000};
+        //        int maxLevels[] = new int[]{100,100,100,100,100,100};
 
 
         String[] algorithms = new String[]{"EBNL", "ESFS", "TkLS"};

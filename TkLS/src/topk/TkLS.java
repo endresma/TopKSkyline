@@ -101,14 +101,14 @@ public class TkLS extends AbstractLS {
         // fill BMO ml sets
         bmo_ml_result = fillBMOSetsTopK();
 
-//        int lvl = 0;
-//        int count_k = 0;
-//        for (List stratum : bmo_ml_result) {
-//            System.out.println("size of stratum " + (lvl++) + " : " + stratum.size());
-//            count_k += stratum.size();
-//            System.out.println("Count_k: " + count_k);
-//
-//        }
+        int lvl = 0;
+        int count_k = 0;
+        for (List stratum : bmo_ml_result) {
+            System.out.println("size of stratum " + (lvl++) + " : " + stratum.size());
+            count_k += stratum.size();
+            System.out.println("Count_k: " + count_k);
+
+        }
 
 
         int nrOfTuples_bmo_ml_set = 0;
