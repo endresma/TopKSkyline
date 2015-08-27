@@ -25,9 +25,7 @@ import flatlc.levels.FlatLevelCombination;
 import java.util.Map;
 
 /**
- * User: endresma
- * Date: 27.01.13
- * Time: 23:43
+ * @author endresma
  * <p/>
  * This class represents the BTG data structure as an array.
  */
@@ -42,8 +40,6 @@ public class BTGDataArray extends BTGDataA {
 
     protected int[] first;
     protected int[] last;
-
-
 
 
     /**
@@ -72,7 +68,6 @@ public class BTGDataArray extends BTGDataA {
     }
 
 
-
     protected void initDataStructure() {
         this.data = new EquivalenceClass[getSize()];
         // this.usedClasses = new boolean[classes];
@@ -81,7 +76,6 @@ public class BTGDataArray extends BTGDataA {
         this.next = new int[getSize()];
 
     }
-
 
 
     /**
@@ -105,9 +99,8 @@ public class BTGDataArray extends BTGDataA {
 
         for (int i = 1; i < first.length; i++) {
             next[last[i - 1]] = first[i];
-//            System.out.println("next[" + i + "] = " + next[i] + " : first[" + i + "] = " + first[i] + " : last[" + i
-//                    + "] = " + last[i]);
-
+            //            System.out.println("next[" + i + "] = " + next[i] + " : first[" + i + "] = " + first[i] + " : last[" + i
+            //                    + "] = " + last[i]);
 
 
         }
@@ -124,13 +117,13 @@ public class BTGDataArray extends BTGDataA {
             return data[id].add(object);
         } else {
             // first member of this equivalence class found
-//            data[id] = new EquivalenceClass(btg.getLevelManager().getLevelInstance(object, null));
+            //            data[id] = new EquivalenceClass(btg.getLevelManager().getLevelInstance(object, null));
 
-//            LevelCombination lvl = btg.getLevelManager().getLevelInstance(object, null);
+            //            LevelCombination lvl = btg.getLevelManager().getLevelInstance(object, null);
 
 
-//            IPreference tmpPref = (ParetoPreference) (((BNLEquivalenceClass) factory).getPreference()).clone();//
-//            data[id] = new BNLEquivalenceClass(tmpPref, id, lvl);
+            //            IPreference tmpPref = (ParetoPreference) (((BNLEquivalenceClass) factory).getPreference()).clone();//
+            //            data[id] = new BNLEquivalenceClass(tmpPref, id, lvl);
             data[id] = getNewEquivalenceClass(id, object);
 
 
@@ -145,9 +138,8 @@ public class BTGDataArray extends BTGDataA {
     }
 
     @Override
-    public boolean checkedAddObject(int id, Object object)  {
-        throw new RuntimeException("checkedAddObject not supported in " +
-                getClass().getName());
+    public boolean checkedAddObject(int id, Object object) {
+        throw new RuntimeException("checkedAddObject not supported in " + getClass().getName());
     }
 
     /**
@@ -155,24 +147,16 @@ public class BTGDataArray extends BTGDataA {
      *
      * @param object
      * @return
-
      */
     protected IEquivalenceClass getNewEquivalenceClass(int id, Object object) {
-//        LevelCombination lvl2 = btg.getLevelManager().getLevelInstance(object, null);
         FlatLevelCombination lvl = btg.getLevelCombination(object);
 
-//        System.out.println(lvl2);
-
-//        System.err.println("Hier hab ich was geaendert");
-//        LevelCombination lvl= btg.getLevelManager().constructLevelCombination(id);
-//        new EquivalenceClass(lvl2);
         return new EquivalenceClass(lvl);
     }
 
 
     @Override
     public void removeBetween(int from, int to) {
-//        DebugPrinter.println("remove between " + from + " and " + to);
 
         if (to == END_OF_DATA) {
             next[from] = END_OF_DATA;
@@ -207,7 +191,7 @@ public class BTGDataArray extends BTGDataA {
         throw new UnsupportedOperationException(("removeAndSetUsed in " + getClass().getName() + " not supported yet"));
     }
 
-//    @Override
+    //    @Override
     public FlatLevelCombination getLC(int id) {
         if (data[id] != null)
             return data[id].getLevelCombination();
@@ -218,7 +202,7 @@ public class BTGDataArray extends BTGDataA {
     @Override
     public int getNextNode(int id) {
         if (id == (next.length - 1))
-//            return 0;
+            //            return 0;
             return END_OF_DATA;
 
         return next[id];
@@ -232,7 +216,7 @@ public class BTGDataArray extends BTGDataA {
         // id > 0
 
         if (id >= getSize())
-//            return -1;
+            //            return -1;
             return END_OF_DATA;
 
         return id;
@@ -241,7 +225,7 @@ public class BTGDataArray extends BTGDataA {
 
     @Override
     public IEquivalenceClass getEC(int id) {
-         return data[id];
+        return data[id];
     }
 
     @Override
@@ -271,14 +255,11 @@ public class BTGDataArray extends BTGDataA {
 
     @Override
     public void removeLevelIfEmpty(int level) {
-        throw new RuntimeException("BTGDataArray.removeLevelIfEmpty not " +
-                "supported");
+        throw new RuntimeException("BTGDataArray.removeLevelIfEmpty not " + "supported");
     }
 
     @Override
     public void removeLevel(int level) {
-//        throw new RuntimeException("BTGDataArray.removeLevel not " +
-//                "supported");
         for (int i = 0; i < data.length; i++) {
             if (getOverallLevel(i) == level) {
                 removeEntry(i);

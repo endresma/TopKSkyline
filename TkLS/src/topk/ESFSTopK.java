@@ -26,9 +26,6 @@ import java.util.List;
 
 /**
  * User: endresma
- * Date: 09.12.14
- * Time: 16:42
- * <p/>
  * ESFS algorithm for Top-k computation as described in Brando, Goncalves, Gonzalez:
  * Evaluating Top-k Skyline Queries over Relational Databases
  * <p/>
@@ -37,7 +34,7 @@ import java.util.List;
 public class ESFSTopK extends EBNLTopK {
 
 
-    public ESFSTopK(ArrayList<Object> R,  int topK) {
+    public ESFSTopK(ArrayList<Object> R, int topK) {
         super(R, topK);
 
     }
@@ -48,11 +45,11 @@ public class ESFSTopK extends EBNLTopK {
      */
     protected boolean dom3(Object t, ArrayList<Object> w) {
 
-        FlatLevelCombination flc_t = (FlatLevelCombination)t;
+        FlatLevelCombination flc_t = (FlatLevelCombination) t;
         for (Object t3 : w) {
-            FlatLevelCombination flc_t3 = (FlatLevelCombination)t3;
+            FlatLevelCombination flc_t3 = (FlatLevelCombination) t3;
             int compare = flc_t.compare(flc_t3);
-//            int compare = preference.compare(t, t3, null);
+            //            int compare = preference.compare(t, t3, null);
             // t3 is better than t, i.e. t is worse than t3
             if (compare == IPreference.LESS) {
                 return false;
@@ -67,18 +64,15 @@ public class ESFSTopK extends EBNLTopK {
 
         int i = 0;
         int count = 0;
-//        int idx = 0;
+        //        int idx = 0;
 
         // topological sort following Godfrey: Skyline with Presorting
-//        long begin = System.currentTimeMillis();
         TopSort.sort(R);
-//        long end = System.currentTimeMillis();
-//        System.out.println("SFS sort: " + (end - begin) + "ms");
 
         boolean cont;
         ArrayList<List<Object>> P = new ArrayList<>();
 
-//        try {
+        //        try {
         while (count < topK && !R.isEmpty()) {
             // initialize Pi = \emptyset
             P.add(i, new ArrayList<>());
@@ -90,7 +84,7 @@ public class ESFSTopK extends EBNLTopK {
                 // get first tuple t from R
                 Object t = R.remove(0);
 
-//                    while (k < Rsize) {
+                //                    while (k < Rsize) {
                 while (!R.isEmpty() || t != null) {
 
 
@@ -131,19 +125,14 @@ public class ESFSTopK extends EBNLTopK {
             w.clear();
 
             int sizePi = P.get(i).size();
-//                System.out.println("size stratum " + i + " : " + sizePi);
             count = count + sizePi;
             if (count >= topK)
                 break;
             ++i;
             R = R1;
 
-        } // end while
-//        } catch (PreferenceException e) {
-//            e.printStackTrace();
-//        }
+        }
 
-//        begin = System.currentTimeMillis();
         ArrayList<Object> topk_result = new ArrayList<>();
 
         for (List<Object> out : P) {
@@ -153,8 +142,6 @@ public class ESFSTopK extends EBNLTopK {
             }
         }
 
-//        end = System.currentTimeMillis();
-//        System.out.println("topk_result: " + (end - begin) + "ms");
         result = topk_result.iterator();
 
     }

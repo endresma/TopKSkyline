@@ -26,14 +26,11 @@ import java.util.Iterator;
 
 /**
  * User: endresma
- * Date: 20.03.13
- * Time: 14:03
- * * <p/>
- * The abstract super class of all HexagonInMemoryFLC_Original algorithms using
+ * <p/>
+ * The abstract super class of all lattice-based algorithms using
  * different data structures for the BTG.
  */
-public abstract class AbstractLS<T extends Iterator<Object>>
-        implements Iterator {
+public abstract class AbstractLS<T extends Iterator<Object>> implements Iterator {
 
 
     /**
@@ -44,8 +41,6 @@ public abstract class AbstractLS<T extends Iterator<Object>>
 
     protected boolean hasElements = false;
 
-//    protected ParetoPreference preference;
-
     protected Iterator result;
     protected Object peek;
 
@@ -53,19 +48,7 @@ public abstract class AbstractLS<T extends Iterator<Object>>
     /**
      * use pruning or not
      */
-    protected boolean usePruning;
-
-    /**
-     * the pruning level
-     */
-    protected int pruningLevel;
-//    protected AtomicIntegerCompare pruningLevel;
-
-    /**
-     * just for some optimizations in removeDominated()
-     */
-    protected int oldPruningLevel;
-//    protected AtomicIntegerCompare oldPruningLevel;
+    //    protected boolean usePruning;
 
 
     /**
@@ -76,62 +59,14 @@ public abstract class AbstractLS<T extends Iterator<Object>>
     /**
      * ctor
      */
-
-
     protected AbstractLS() {
-
     }
 
-    protected AbstractLS(final T input,
-//                                         final ParetoPreference pref,
-                         final BTGDataA btg,
-                         final boolean usePruning) {
+    protected AbstractLS(final T input, final BTGDataA btg) {
         this.input = input;
-//        this.preference = pref;
         this.btg = btg;
-
-        this.usePruning = usePruning;
-//        if (usePruning) {
-//            this.pruningLevel.set(btg.getMaxLevel() + 1);
-////            this.pruningLevel = new AtomicIntegerCompare(btg.getMaxLevel() + 1);
-//
-////            this.pruningLevel = btg.getMaxLevel() + 1;
-////            this.oldPruningLevel = pruningLevel;
-//            this.oldPruningLevel = pruningLevel;
-//        }
-
     }
 
-
-    /**
-     * Returns an <code>Iterator</code> that will iterate through all elements
-     * of the result set.
-     *
-     * @return Iterator
-     */
-    public Iterator<Object> getResults() {
-
-//        long begin = System.currentTimeMillis();
-        removeDominated();
-//        long end = System.currentTimeMillis();
-//        long fdRuntime = end - begin;
-
-//        System.out.println("Time to remove dominated nodes (sec): " + (fdRuntime/1000.));
-
-        return btg;
-    }
-
-
-//    protected abstract void removeDominated();
-
-
-    /**
-     * Apply pruning on the different data structures. Since this differs
-     * from algorithm to algorithm each one must implement this method itself.
-     * <p/>
-     * Removes all levels between from and to, incl.
-     */
-//    protected abstract void applyPruning(int from, int to);
 
 
     /**
@@ -139,52 +74,6 @@ public abstract class AbstractLS<T extends Iterator<Object>>
      */
     protected abstract void computeResult();
 
-
-//    /**
-//     * Apply pruning on the different data structures. Since this differs
-//     * from algorithm to algorithm each one must implement this method itself.
-//     * Removes all levels between from and to, incl.
-//     */
-//    protected void applyPruning(int from, int to) {
-//        for (int i = from; i <= to; i++) {
-//            btg.removeLevel(i);
-//        }
-//    }
-
-
-//    /**
-//     * Set the pruning level to pruning level of this id if it is better than
-//     * the current pruning level. In this case return true. If the pruning level is not changed, return false.
-//     *
-//     * @param id the current node id
-//     * @return
-//     */
-//    protected boolean setPruningLevel(int id) {
-//
-//
-//        int pl = btg.getPruningLevel(id);
-//
-//        return pruningLevel.setIfLess(pl);
-//
-////        if (pl < pruningLevel) {
-////            oldPruningLevel = pruningLevel;
-////            pruningLevel = pl;
-////            return true;
-////        }
-////
-////        return false;
-//    }
-
-
-    public void reset() {
-        throw new UnsupportedOperationException("reset in " + getClass()
-                .getName() + " not supported");
-    }
-
-
-    public boolean hasElements() {
-        return this.hasElements;
-    }
 
     @Override
     public boolean hasNext() {
@@ -210,20 +99,10 @@ public abstract class AbstractLS<T extends Iterator<Object>>
 
     @Override
     public void remove() {
-        throw new UnsupportedOperationException(
-                "remove not supported in " + getClass().getName());
+        throw new UnsupportedOperationException("remove not supported in " + getClass().getName());
 
     }
 
-
-    /**
-     * Number of occupied nodes (Equivalence classes) in the BTG
-     *
-     * @return int
-     */
-    protected int getAllocation() {
-        return btg.getAllocation();
-    }
 
     /**
      * Remove Phase
@@ -232,38 +111,20 @@ public abstract class AbstractLS<T extends Iterator<Object>>
      */
     protected void removeDominated() {
 
-//        if (btg instanceof BTGDataLevelBasedA) {
-//            if (btg.getMinLevel() == 0) {
-//                System.out.println("Top Node in Level 0 found!");
-//
-//                for (int i = 1; i <= btg.getHeight() - 1; i++) {
-//                    btg.removeLevel(i);
-//                }
-//
-//                return;
-//            }
-//        } else {
-            if (btg.getFirstNode() == 0) {
-                System.out.println("Zero node occupied, return -------------");
-                // only tuples with a level of 0 belong to the result set
-//            btg.next[0] = -1;
-                btg.removeBetween(0, BTGDataI.END_OF_DATA);
-                return;
-            }
-//        }
+        if (btg.getFirstNode() == 0) {
+            System.out.println("Zero node occupied, return -------------");
+            // only tuples with a level of 0 belong to the result set
+            //            btg.next[0] = -1;
+            btg.removeBetween(0, BTGDataI.END_OF_DATA);
+            return;
+        }
+        //        }
 
 
         int current;
-//        if (btg instanceof BTGDataLevelBasedA) {
-//            current = btg.getFirstNode();
-//        } else {
-            current = 1;
-//        }
+        current = 1;
 
         int position;
-//        int currentLevel;
-//        while (current > 0) {
-
 
         while (current != BTGDataI.END_OF_DATA) {
             if (btg.getEC(current) != null) {
@@ -271,45 +132,21 @@ public abstract class AbstractLS<T extends Iterator<Object>>
                 for (int i = 0; i < btg.getMaxLevels().length; i++) {
 
                     position = current + btg.getWeight(i);
-                    if (position < btg.getSize() &&
-                            btg.getOverallLevel(current) + 1 ==
-                                    btg.getOverallLevel(position)) {
-                        // Erhoehung moeglich
-//                        DebugPrinter.println("*** *** walkDown from " + current                               + " to " + position);
+                    if (position < btg.getSize() && btg.getOverallLevel(current) + 1 == btg.getOverallLevel(position)) {
                         walkDown(position, i, true);
                     }
                 }
             } else {
                 // current node does not contain elements => remove it from list
-//                if (!(btg instanceof BTGDataLevelBasedA)) {
-//                    int prevNode = btg.getPrevNode(current);
-//                    int nextNode = btg.getNextNode(current);
-//                    DebugPrinter.println("removeBetween: " + prevNode + " " +                           "and " +                            nextNode);
-                    btg.removeBetween(btg.getPrevNode(current),
-                            btg.getNextNode(current));
-//                }
+                btg.removeBetween(btg.getPrevNode(current), btg.getNextNode(current));
+                //                }
             }
 
-//            System.out.println("current = " + current);
-//            printArray("BTG", btg.data);
-//            printArray("next",);
-
-//            if (btg instanceof BTGDataLevelBasedA) {
-//                current = btg.getNextOccupiedNode(current);
-//            } else {
-                current = btg.getNextNode(current);
-//            }
-//
+            current = btg.getNextNode(current);
 
         }
 
-//        if (!(btg instanceof BTGDataLevelBasedA)) {
-            btg.setFirstNode(btg.getNextNode(0));
-//        }
-
-//        if (usePruning && btg.getOverallLevel(current) >= pruningLevel) {
-//            current = BTGDataA.END_OF_DATA;
-//        }
+        btg.setFirstNode(btg.getNextNode(0));
 
     }
 
@@ -325,17 +162,6 @@ public abstract class AbstractLS<T extends Iterator<Object>>
      */
 
     protected void walkDown(int position, int edge, boolean remove) {
-//        DebugPrinter.println("*** *** walkDown to " + position);
-        int level = btg.getOverallLevel(position);
-//        if (usePruning) {
-//
-////            DebugPrinter.println("------------------ Pruning");
-//            if (level >= pruningLevel.get()) {
-//                btg.removeEntry(position);
-//                btg.setUsedClass(position, true);
-//                return;
-//            }
-//        }
 
         FlatLevelCombination lc = null;
 
@@ -343,15 +169,12 @@ public abstract class AbstractLS<T extends Iterator<Object>>
             // node does not exist
             if (btg.isUsedClass(position)) {
                 // node has been visited
-//                DebugPrinter.println("return from " + position);
                 return;
             }
             // node has not been visited: walk down followers
-//            lc = btg.getLevelManager().constructLevelCombination(position);
             lc = btg.getBTG().constructLevelCombination(position);
         } else {
             lc = btg.getEC(position).getLevelCombination();
-
 
 
         }
@@ -368,10 +191,7 @@ public abstract class AbstractLS<T extends Iterator<Object>>
             btg.removeEntry(position);
             btg.setUsedClass(position, true);
 
-//            if (!(btg instanceof BTGDataLevelBasedA)) {
-                btg.removeBetween(btg.getPrevNode(position),
-                        btg.getNextNode(position));
-//            }
+            btg.removeBetween(btg.getPrevNode(position), btg.getNextNode(position));
         }
 
 

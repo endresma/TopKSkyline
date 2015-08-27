@@ -22,14 +22,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-/**
- * Diese Klasse erzeugt eine .dat Datei fuer Gnuplot. Sie enthaelt die Daten der
- * zu zeichnenden Grafiken, also (x,y) Koordinaten Die erste Spalte in der Datei
- * entspricht immer der x-Koordinate. Alle weiteren Spalten geben y-Koordinaten
- * an.
- *
- * @author me
- */
 public class GnuplotExporter {
 
     private static String MAC_VIEWER = "/Applications/Preview.app/Contents/MacOS/Preview";

@@ -25,16 +25,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Interface of all objects of EquivalenceClass have to implement.
- * <p/>
- * User: endresma
- * Date: 07.06.13
- * Time: 07:22
- *
- * @author endresma
 
- */
  public interface IEquivalenceClass extends Comparable<Object> {
 
     /**

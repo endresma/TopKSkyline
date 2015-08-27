@@ -24,9 +24,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * User: endresma
- * Date: 05.03.13
- * Time: 13:03
+ * @author endresma
  * Interface for all BTG data structures.
  */
  public interface BTGDataI extends Iterator {

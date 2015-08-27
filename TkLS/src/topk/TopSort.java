@@ -23,18 +23,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * User: endresma
- * Date: 10.12.14
- * Time: 10:50
- * Sorts some data based on a sorting function
- */
-public class TopSort {
 
+public class TopSort {
 
     /**
      * sort a list of input data concerning the entropy criterion mentioned in
      * Godfrey: Skyline with Presorting
+     *
      * @param data
      */
     public static void sort(List<Object> data) {
@@ -68,12 +63,12 @@ public class TopSort {
 
     private static float entropy(FlatLevelCombination flc) {
         int[] t = flc.getLevelCombination();
-        float e=0;
+        float e = 0;
 
 
         // E(t) = \sum_{i=1}^k ln(t[a_i] + 1)
-        for(int i=0; i<t.length; ++i) {
-            e +=  Math.log(t[i] + 1);
+        for (int i = 0; i < t.length; ++i) {
+            e += Math.log(t[i] + 1);
         }
 
         return e;

@@ -55,17 +55,6 @@ public class BTG implements BTGI {
     private int[] btgEdgeWeights;
 
 
-//    /**
-//     * object for the management of LevelCombination object instances
-//     */
-//    public LevelManager manager;
-
-
-//    /**
-//     * The preference for this BTG
-//     */
-//    private IPreference iPref;
-
     /**
      * ctor. Only for BTG analysis.
      *
@@ -80,35 +69,120 @@ public class BTG implements BTGI {
 
         this.nodeZero = new int[btgMaxLevels.length];
 
-//        manager = null;
     }
 
+    /**
+     * main method to thest the BTG implementation
+     *
+     * @param args
+     */
+    public static void main(String[] args) {
+
+        int maxLevels[] = new int[]{0, 1, 2, 3, 4, 5, 6};
+
+        //        BTG btg = new BTG(maxLevels);
+
+
+        //        System.out.println("maxLevels: " + Arrays.toString(btg.getMaxLevels()));
+        //        System.out.println("height: " + btg.getHeight());
+        //        System.out.println("size: " + btg.getSize());
+        //
+        //        System.out.println("dim: " + btg.getDimension());
+        //        System.out.println("edgeWeights: "
+        //                + Arrays.toString(btg.getEdgeWeights()));
+        //        int ids[] = new int[]{0, 12, 47, 59};
+        // Result should be
+        // 0: (0,0,0)
+        // 12: (0,2,2)
+        // 47: (2,1,2)
+        // 59: (2,3,4)
+        //        for (int i = 0; i < ids.length; i++) {
+        //            System.out.println("levelCombination of ID " + ids[i] + ": "
+        //                    + Arrays.toString(btg.getLevelCombination(ids[i])));
+        //        }
+        //
+        //        System.out.println("maxLevel BTG: " + btg.getMaxLevel());
+        //
+        //        int ID = 12;
+        //
+        //        System.out.println("overallLevel ID " + ID + " : "
+        //                + btg.getOverallLevel(ID));
+        //        int P = 2;
+        //        System.out.println("weight of preference " + P + " : "
+        //                + btg.getWeight(P));
+
+        //        int lvl = 6;
+        //        System.out.println("width level " + lvl + " : " + btg.getWidth(lvl));
+        //        System.out.println("with2 level " + lvl + " : " + btg.getWidth2(lvl));
+
+        //        for (int i = 0; i < btg.getMaxLevel(); i++) {
+        //            System.out.println("width level " + i + " : " + btg.getWidth(i));
+        //            System.out.println("with2 level " + i + " : " + btg.getWidth2(i));
+        //
+        //        }
+
+
+        //        int[] lvlComb = new int[maxLevels.length];
+        //        System.out.println("invertID " + ID + " : "
+        //                + btg.getInvertedID(ID, lvlComb));
+        //        System.out.println("lvlCom of ID " + ID + " : "
+        //                + Arrays.toString(lvlComb));
+
+        // test minimum
+        // int arr[] = new int[] { 1, 4, 0, 1, 4, 2, 10, 0 };
+        // System.out.println("getMinimum  " + btg.getMinimum(arr));
+
+        //        System.out.println("pruning Level of ID " + ID + " : "
+        //                + btg.getPruningLevel(ID));
+        //        ID = 8;
+        //        System.out.println("pruning Level of ID " + ID + " : "
+        //                + btg.getPruningLevel(ID));
+        //        ID = 0;
+        //        System.out.println("pruning Level of ID " + ID + " : "
+        //                + btg.getPruningLevel(ID));
+        //        ID = 59;
+        //        System.out.println("pruning Level of ID " + ID + " : "
+        //                + btg.getPruningLevel(ID));
+        //
+        //        int[] lvlC = new int[]{0, 0, 0};
+        //        System.out.println("ID for combination (0,0,0)0: " + btg.getID(lvlC));
+        //
+        //        lvlC = new int[]{0, 2, 2};
+        //        System.out.println("ID for combination (0,2,2)12: " + btg.getID(lvlC));
+        //
+        //        lvlC = new int[]{2, 0, 3};
+        //        System.out.println("ID for combination (2,0,3)43: " + btg.getID(lvlC));
+        //
+        //        lvlC = new int[]{2, 3, 4};
+        //        System.out.println("ID for combination (2,3,4)59: " + btg.getID(lvlC));
+        //
+        //        System.out.println("Pruning Level von 47(2,1,2): "
+        //                + btg.getPruningLevel(47));
+        //        System.out.println("Pruning Level von 47(2,1,2): "
+        //                + btg.getPruningLevel(new int[]{2, 1, 2}));
+        //
+        //        int[] node1 = new int[]{0, 1, 1};
+        //        int[] node2 = new int[]{2, 0, 2};
+        //        System.out
+        //                .println("Minimum of "
+        //                        + Arrays.toString(node1)
+        //                        + " and "
+        //                        + Arrays.toString(node2)
+        //                        + " should be (0,0,1) , is: "
+        //                        + Arrays.toString(btg.getMinimumLevelCombination(node1,
+        //                        node2)));
+        //
+        //        // extended Pruning Level
+        //        Vector<int[]> v = new Vector<int[]>();
+        //        v.add(node1);
+        //        v.add(node2);
+
+    }
 
     public FlatLevelCombination getLevelCombination(Object value) {
         FlatLevelCombination flc = (FlatLevelCombination) value;
-//        int[] iLevels = ((FlatLevelCombination) value).getLevelCombination();
-//        double[] dLevels = new double[iLevels.length];
-//        Object[] value = new Object[iLevels.length];
-//
-//        double[] maxLevels = new double[btgMaxLevels.length];
-//        double[] edgeWeights = new double[btgEdgeWeights.length];
-//
-//        for (int i = 0; i < iLevels.length; ++i) {
-//            dLevels[i] = (int) iLevels[i];
-//            maxLevels[i] = (int) btgMaxLevels[i];
-//            edgeWeights[i] = (int) btgEdgeWeights[i];
-//
-//        }
-
         return flc;
-//        return new FlatLevelCombination(dLevels, dLevels, maxLevels, edgeWeights);
-
-//
-//        return new LevelCombination(dLevels, null, maxLevels, edgeWeights, value);
-//        return new LevelCombination(dLevels, ((FlatLevelCombination) value).getLevelCombinationObject(), maxLevels, edgeWeights, null);
-
     }
-
 
     public FlatLevelCombination constructLevelCombination(int id) {
         double[] values = new double[this.btgMaxLevels.length];
@@ -121,7 +195,7 @@ public class BTG implements BTGI {
     }
 
     FlatLevelCombination constructLevelCombination(double[] values) {
-//        if (values.length == this.basePrefs.length) {
+        //        if (values.length == this.basePrefs.length) {
 
         double[] maxLevels = new double[btgMaxLevels.length];
         double[] edgeWeights = new double[btgEdgeWeights.length];
@@ -138,48 +212,35 @@ public class BTG implements BTGI {
             level[i] = (int) values[i];
             value[i] = values[i];
         }
-//
-//
+
         FlatLevelCombination flc = new FlatLevelCombination(level, value, btgMaxLevels, btgEdgeWeights);
         return flc;
-//        FlatLCTuple flct = new FlatLCTuple(flc);
-//
-//        return new LevelCombination(values, null, maxLevels, edgeWeights, flct);
-//        return new FlatLevelCombination(values);
-//        }
-//        return getNewLevel();
     }
-
 
     @Override
     public int getDimension() {
         return btgMaxLevels.length;
     }
 
-
     @Override
     public int getHeight() {
         return this.btgHeight;
     }
-
 
     @Override
     public int[] getEdgeWeights() {
         return this.btgEdgeWeights;
     }
 
-
     @Override
     public int getWeight(int index) {
         return btgEdgeWeights[index];
     }
 
-
     @Override
     public int getSize() {
         return this.btgSize;
     }
-
 
     @Override
     public int getOverallLevel(int id) {
@@ -193,12 +254,10 @@ public class BTG implements BTGI {
         return result;
     }
 
-
     @Override
     public int getOverallLevel(int[] levelCombination) {
         return this.getOverallLevel(getID(levelCombination));
     }
-
 
     @Override
     public int[] getLevelCombination(int id) {
@@ -212,16 +271,9 @@ public class BTG implements BTGI {
         return result;
     }
 
-
     @Override
     public int getID(int[] levelCombination) {
         int id = 0;
-
-//        if (levelCombination.length != btgEdgeWeights.length) {
-//            System.err.println("wrong argument length in " + getClass().getName() + " maybe due to the use of " +
-//                    "the HexagonMemOptFLC algorithm");
-////            throw new RuntimeException("wrong argument in BTG.getID");
-//        }
 
         for (int i = 0; i < btgEdgeWeights.length; i++) {
             id += btgEdgeWeights[i] * levelCombination[i];
@@ -229,7 +281,6 @@ public class BTG implements BTGI {
 
         return id;
     }
-
 
     @Override
     public int getInvertedID(int id, int[] levelComb) {
@@ -244,44 +295,26 @@ public class BTG implements BTGI {
         return result;
     }
 
-
     @Override
     public int getLevel(int i) {
         return btgMaxLevels[i];
     }
-
 
     @Override
     public int getMaxLevel() {
         return this.btgHeight - 1;
     }
 
-
     @Override
     public int[] getMaxLevels() {
-//        int[] result = new int[btgMaxLevels.length];
-//        System.arraycopy(btgMaxLevels, 0, result, 0, btgMaxLevels.length);
         return btgMaxLevels;
     }
 
-
     @Override
     public int getWidth(int level) {
-        return this.width(this.btgMaxLevels, level, this.btgHeight,
-                btgMaxLevels.length / 2);
+        return this.width(this.btgMaxLevels, level, this.btgHeight, btgMaxLevels.length / 2);
     }
 
-    /**
-     * Do not use this version due to bugs which has to be fixed!
-     *
-     * @param level
-     * @return
-     * @deprecated
-     */
-    private int getWidth2(int level) {
-        return width2(this.btgMaxLevels, level, 0,
-                btgMaxLevels.length - 1, this.btgHeight);
-    }
 
     /**
      * computes the height of the BTG given by mxLvls
@@ -322,8 +355,7 @@ public class BTG implements BTGI {
         btgEdgeWeights[btgMaxLevels.length - 1] = 1;
 
         for (int i = btgMaxLevels.length - 2; i >= 0; i--) {
-            btgEdgeWeights[i] = btgEdgeWeights[i + 1]
-                    * (btgMaxLevels[i + 1] + 1);
+            btgEdgeWeights[i] = btgEdgeWeights[i + 1] * (btgMaxLevels[i + 1] + 1);
         }
 
         return btgEdgeWeights;
@@ -344,67 +376,6 @@ public class BTG implements BTGI {
         return size;
     }
 
-    /**
-     * computes the width of the level v in this BTG. This version has bugs.
-     * It uses
-     *
-     * @param maxLvls
-     * @param v
-     * @param lIndex
-     * @param rIndex
-     * @return
-     */
-    // FIXME: me optimize, use left and right indices to specify
-    private int width2(int[] maxLvls, int v, int lIndex, int rIndex,
-                       int btgHeight) {
-        int leftIndex = lIndex;
-        int rightIndex = rIndex;
-
-
-//        if (maxLvls.length < 2 || v == 0 || v == btgHeight - 1)
-//            return 1;
-
-        if ((rightIndex - leftIndex) == 1 || v == 0 || v == btgHeight - 1)
-            return 1;
-
-        int width = 0;
-
-
-//        if (maxLvls.length == 2) {
-        if ((rightIndex - leftIndex) == 1) {
-            if (v <= Math.min(maxLvls[0], maxLvls[1])) {
-                width = v + 1;
-            } else if (Math.min(maxLvls[0], maxLvls[1]) < v
-                    && v <= (maxLvls[0] + maxLvls[1]) / 2) {
-                width = Math.min(maxLvls[0], maxLvls[1]) + 1;
-            } else { // (maxLevels[0] + maxLevels[1]) / 2) < level
-                width = width2(maxLvls, btgHeight - 1 - v,
-                        leftIndex, rightIndex, height(maxLvls)
-                );
-            }
-        }
-
-//        if (maxLvls.length > 2) {
-        if (rightIndex - leftIndex >= 2) { // more than 2 elements in the array
-//            int splitIndex = maxLvls.length / 2;
-            int splitIndex = (rightIndex - leftIndex + 1) / 2;
-
-            int heightLeft, heightRight;
-            for (int i = 0; i <= v; i++) {
-//                int[] left = Arrays.copyOfRange(maxLvls, 0, splitIndex);
-//                int[] right = Arrays
-//                        .copyOfRange(maxLvls, splitIndex, maxLvls.length);
-                heightLeft = height(maxLvls, leftIndex, splitIndex);
-                heightRight = height(maxLvls, splitIndex + 1, rightIndex);
-                width += width2(maxLvls, i, leftIndex, splitIndex, heightLeft)
-                        * width2(maxLvls, v - i, splitIndex + 1, rightIndex,
-                        heightRight);
-
-            }
-        }
-
-        return width;
-    }
 
     /**
      * computes the width of the level v
@@ -417,7 +388,6 @@ public class BTG implements BTGI {
      */
     private int width(int[] maxLvls, int v, int btgHeight, int rightSize) {
         // Terminierungsfaelle
-        // int tmpHeight = height(maxLvls);
         int width = 0;
 
         if (rightSize >= maxLvls.length) {
@@ -437,12 +407,10 @@ public class BTG implements BTGI {
         if (maxLvls.length == 2) {
             if (v <= Math.min(maxLvls[0], maxLvls[1])) {
                 width = v + 1;
-            } else if (Math.min(maxLvls[0], maxLvls[1]) < v
-                    && v <= (maxLvls[0] + maxLvls[1]) / 2) {
+            } else if (Math.min(maxLvls[0], maxLvls[1]) < v && v <= (maxLvls[0] + maxLvls[1]) / 2) {
                 width = Math.min(maxLvls[0], maxLvls[1]) + 1;
             } else { // (maxLevels[0] + maxLevels[1]) / 2) < level
-                width = width(maxLvls, btgHeight - 1 - v, height(maxLvls),
-                        rightSize);
+                width = width(maxLvls, btgHeight - 1 - v, height(maxLvls), rightSize);
             }
         }
 
@@ -457,39 +425,13 @@ public class BTG implements BTGI {
                 // the range
                 // of the array, do not copy the Arrays
                 int[] left = Arrays.copyOfRange(maxLvls, 0, split);
-                int[] right = Arrays
-                        .copyOfRange(maxLvls, split, maxLvls.length);
-                width += width(left, i, height(left), rightSize)
-                        * width(right, v - i, height(right), rightSize);
+                int[] right = Arrays.copyOfRange(maxLvls, split, maxLvls.length);
+                width += width(left, i, height(left), rightSize) * width(right, v - i, height(right), rightSize);
             }
         }
 
         return width;
     }
-
-    // /**
-    // * Returns the node id of the pruning node for the given level.
-    // *
-    // * @param level
-    // * @return
-    // */
-    // public int getPruningNode(int level) {
-    // if (level == 0)
-    // return -1;
-    // else if (level == getMaxLevel())
-    // return node[btgSize - 2];
-    // else if (getDimension() == 1)
-    // return node[level - 1];
-    // int id = 0;
-    // for (int i = 0; i < weight.length; i++) {
-    // id += weight[i] * Math.max(0, level - (height - 1 - maxLevels[i]));
-    // }
-    // if (level == node[id].getLevel())
-    // ;
-    // return node[id];
-    // }
-    //
-
 
     // FIXME: me: kann man effizienter implementieren, da hier zuerst die ID
     // berechnet wird, aber in der augerufenen Methode aus der ID wieder eine
@@ -498,7 +440,6 @@ public class BTG implements BTGI {
     public int getPruningLevel(int[] lvlCombination) {
         return getPruningLevel(getID(lvlCombination));
     }
-
 
     @Override
     public int getPruningLevel(int id) {
@@ -545,7 +486,6 @@ public class BTG implements BTGI {
         return sumMaxPi - getMinimumForPruningLevel(tmp);
     }
 
-
     /**
      * Compute the minimum for each component and return the minimal level
      * combination
@@ -568,7 +508,6 @@ public class BTG implements BTGI {
 
     }
 
-
     /**
      * @param arr
      * @return
@@ -578,8 +517,7 @@ public class BTG implements BTGI {
         int min = Integer.MAX_VALUE;
         for (int a : arr) {
             if (a < 0)
-                throw new RuntimeException(
-                        "Negative value not allowd in BTG.getMinimum");
+                throw new RuntimeException("Negative value not allowd in BTG.getMinimum");
             // 0 not allowd, cp. Diss T. Preisinger, Pruning Level computation
             // if (a != 0) {
             if (a < min)
@@ -588,114 +526,6 @@ public class BTG implements BTGI {
         }
 
         return min;
-    }
-
-    /**
-     * main method to thest the BTG implementation
-     *
-     * @param args
-     */
-    public static void main(String[] args) {
-
-        int maxLevels[] = new int[]{0, 1, 2, 3, 4, 5, 6};
-
-//        BTG btg = new BTG(maxLevels);
-
-
-//        System.out.println("maxLevels: " + Arrays.toString(btg.getMaxLevels()));
-//        System.out.println("height: " + btg.getHeight());
-//        System.out.println("size: " + btg.getSize());
-//
-//        System.out.println("dim: " + btg.getDimension());
-//        System.out.println("edgeWeights: "
-//                + Arrays.toString(btg.getEdgeWeights()));
-//        int ids[] = new int[]{0, 12, 47, 59};
-        // Result should be
-        // 0: (0,0,0)
-        // 12: (0,2,2)
-        // 47: (2,1,2)
-        // 59: (2,3,4)
-//        for (int i = 0; i < ids.length; i++) {
-//            System.out.println("levelCombination of ID " + ids[i] + ": "
-//                    + Arrays.toString(btg.getLevelCombination(ids[i])));
-//        }
-//
-//        System.out.println("maxLevel BTG: " + btg.getMaxLevel());
-//
-//        int ID = 12;
-//
-//        System.out.println("overallLevel ID " + ID + " : "
-//                + btg.getOverallLevel(ID));
-//        int P = 2;
-//        System.out.println("weight of preference " + P + " : "
-//                + btg.getWeight(P));
-
-//        int lvl = 6;
-//        System.out.println("width level " + lvl + " : " + btg.getWidth(lvl));
-//        System.out.println("with2 level " + lvl + " : " + btg.getWidth2(lvl));
-
-//        for (int i = 0; i < btg.getMaxLevel(); i++) {
-//            System.out.println("width level " + i + " : " + btg.getWidth(i));
-//            System.out.println("with2 level " + i + " : " + btg.getWidth2(i));
-//
-//        }
-
-
-//        int[] lvlComb = new int[maxLevels.length];
-//        System.out.println("invertID " + ID + " : "
-//                + btg.getInvertedID(ID, lvlComb));
-//        System.out.println("lvlCom of ID " + ID + " : "
-//                + Arrays.toString(lvlComb));
-
-        // test minimum
-        // int arr[] = new int[] { 1, 4, 0, 1, 4, 2, 10, 0 };
-        // System.out.println("getMinimum  " + btg.getMinimum(arr));
-
-//        System.out.println("pruning Level of ID " + ID + " : "
-//                + btg.getPruningLevel(ID));
-//        ID = 8;
-//        System.out.println("pruning Level of ID " + ID + " : "
-//                + btg.getPruningLevel(ID));
-//        ID = 0;
-//        System.out.println("pruning Level of ID " + ID + " : "
-//                + btg.getPruningLevel(ID));
-//        ID = 59;
-//        System.out.println("pruning Level of ID " + ID + " : "
-//                + btg.getPruningLevel(ID));
-//
-//        int[] lvlC = new int[]{0, 0, 0};
-//        System.out.println("ID for combination (0,0,0)0: " + btg.getID(lvlC));
-//
-//        lvlC = new int[]{0, 2, 2};
-//        System.out.println("ID for combination (0,2,2)12: " + btg.getID(lvlC));
-//
-//        lvlC = new int[]{2, 0, 3};
-//        System.out.println("ID for combination (2,0,3)43: " + btg.getID(lvlC));
-//
-//        lvlC = new int[]{2, 3, 4};
-//        System.out.println("ID for combination (2,3,4)59: " + btg.getID(lvlC));
-//
-//        System.out.println("Pruning Level von 47(2,1,2): "
-//                + btg.getPruningLevel(47));
-//        System.out.println("Pruning Level von 47(2,1,2): "
-//                + btg.getPruningLevel(new int[]{2, 1, 2}));
-//
-//        int[] node1 = new int[]{0, 1, 1};
-//        int[] node2 = new int[]{2, 0, 2};
-//        System.out
-//                .println("Minimum of "
-//                        + Arrays.toString(node1)
-//                        + " and "
-//                        + Arrays.toString(node2)
-//                        + " should be (0,0,1) , is: "
-//                        + Arrays.toString(btg.getMinimumLevelCombination(node1,
-//                        node2)));
-//
-//        // extended Pruning Level
-//        Vector<int[]> v = new Vector<int[]>();
-//        v.add(node1);
-//        v.add(node2);
-
     }
 
 }

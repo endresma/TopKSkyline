@@ -27,7 +27,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Top-k lattice algorithm based on the implementation of Hexagon [PK07, MPJ07].
+ * Top-k lattice algorithm based on the implementation of Hexagon [PK07, MPJ07, EK14].
+ *
  * @author endresma
  */
 
@@ -35,30 +36,30 @@ import java.util.List;
 public class TkLS extends AbstractLS {
 
     /**
-     * result set
-     */
-    private ArrayList<List<Object>> bmo_ml_result;
-    /**
      * number of tuples to find altogether;
      */
     protected int topK;
     /**
-     * number of tuples, that are already found;
-     */
-    private int foundK = 0;
-    /**
      * array for result tuples
      */
     protected Object[] m_resultTupleMemory;
+    /**
+     * result set
+     */
+    private ArrayList<List<Object>> bmo_ml_result;
+    /**
+     * number of tuples, that are already found;
+     */
+    private int foundK = 0;
     /**
      * counter for the output;
      */
     private int returnedTupleNumber = 0;
 
 
-    public TkLS(Iterator input, final BTGDataA btg, int topK)  {
+    public TkLS(Iterator input, final BTGDataA btg, int topK) {
 
-        super(input, btg, false);
+        super(input, btg);
         this.topK = topK;
     }
 
@@ -68,15 +69,14 @@ public class TkLS extends AbstractLS {
      * every other object currently in the result set, it will not be added and
      * the. method will return <code>false</code>.
      *
-     * @param object  the object to add
+     * @param object the object to add
      * @return <code>true</code> if the object has been added,
      * <code>false</code> otherwise.
      */
     public boolean addObject(Object object) {
 
-        FlatLevelCombination flc = (FlatLevelCombination)object;
+        FlatLevelCombination flc = (FlatLevelCombination) object;
         int[] lc = flc.getLevelCombination();
-//        int id = btg.computeIdentifier(lc);
         int id = btg.getID(lc);
         if (id > btg.getSize()) {
             throw new RuntimeException(("ID " + id + " to big in " +
@@ -91,11 +91,10 @@ public class TkLS extends AbstractLS {
 
         // add all tuples to the BTG
 
-            // give all input
-            while (input.hasNext()) {
-                addObject(input.next());
-            }
-
+        // give all input
+        while (input.hasNext()) {
+            addObject(input.next());
+        }
 
 
         // fill BMO ml sets
@@ -112,12 +111,12 @@ public class TkLS extends AbstractLS {
 
 
         int nrOfTuples_bmo_ml_set = 0;
-//        returnedTupleNumber = 0;
+        //        returnedTupleNumber = 0;
 
         // total number of BMO_ml sets
         int nrOf_bmo_ml_sets = bmo_ml_result.size();
 
-//        if (nrOf_bmo_ml_sets > 0) {
+        //        if (nrOf_bmo_ml_sets > 0) {
 
 
         // number of objects in BTG, this corresponds to the number of input tuples
@@ -144,18 +143,11 @@ public class TkLS extends AbstractLS {
             ++i;
         }
 
-//        if (topK > 0) {
         peek = m_resultTupleMemory[returnedTupleNumber];
         returnedTupleNumber++;
-//        }
 
         foundK = 0;
 
-
-//        } else {   // no objects found
-//            peek = null;
-//            topK = 0;
-//        }
 
     }
 

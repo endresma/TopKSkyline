@@ -19,9 +19,7 @@ package btg;
 
 /**
  * Interface for the BTG (not the data structure).
- * User: endresma
- * Date: 06.03.13
- * Time: 12:19
+ * @author endresma
  */
 public interface BTGI {
 

@@ -19,16 +19,13 @@ package btg;
 
 
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Abstract super class for all BTG data structure implementations.
  * <p/>
- * User: endresma
- * Date: 25.01.13
- * Time: 07:39
+ * @author endresma
  */
 public abstract class BTGDataA implements BTGDataI, BTGI {
 
@@ -98,19 +95,10 @@ public abstract class BTGDataA implements BTGDataI, BTGI {
         // TODO: check original code vs. >= 0 && ...
         // if(current > 0)
         if (current != END_OF_DATA) {
-//            if (current == 0) {
-//                System.err.println("BTGDataA.hasNext(), current = 0");
-//            }
-//            System.out.println("current = " + current);
             current = getNextOccupiedNode(current);
-//            System.out.println("nextOccupiedNode = " + current);
 
             // TODO: check original code vs. >= 0 && ...
-//            if(current > 0) {
             if (current != END_OF_DATA) {
-//                if (current == 0) {
-//                    System.err.println("BTGDataA.hasNext(), current = 0");
-//                }
                 ec = getEC(current).iterator();
                 return hasNext();
             }
@@ -130,25 +118,6 @@ public abstract class BTGDataA implements BTGDataI, BTGI {
     }
 
 
-
-    /**
-     * set new local dominator if it is less than the old one.
-     *
-     * @param id
-     * @param ld
-     */
-    public boolean setLDIfLess(int id, int ld) {
-        throw new RuntimeException("one unrestricted domain not supported in " + getClass().getName());
-    }
-
-    public int getLD(int id) {
-        throw new RuntimeException("one unrestricted domain not supported in " + getClass().getName());
-    }
-
-
-    public boolean addObjectIfLDIsLess(int id, Object object, int ld)  {
-        throw new RuntimeException("one unrestricted domain not supported in " + getClass().getName());
-    }
 
 
     @Override

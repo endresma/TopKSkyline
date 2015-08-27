@@ -27,29 +27,24 @@ import java.util.List;
 
 /**
  * User: endresma
- * Date: 09.12.14
- * Time: 16:42
- * <p/>
  * EBNL algorithm for Top-k computation as described in Brando, Goncalves, Gonzalez:
  * Evaluating Top-k Skyline Queries over Relational Databases
  * <p/>
- * Quick and dirty implementation, can be optimized.
+ * Quick and dirty implementation, could be optimized.
  */
 public class EBNLTopK implements Iterator {
 
-    protected int topk_counter = 0;
-
-    protected ArrayList<Object> R;
     //    protected final ParetoPreference preference;
     protected final int topK;
-
+    protected int topk_counter = 0;
+    protected ArrayList<Object> R;
     protected Iterator result;
 
 
     public EBNLTopK(ArrayList<Object> R, int topK) {
 
         this.R = R;
-//        this.preference = preference;
+        //        this.preference = preference;
         this.topK = topK;
 
         compute();
@@ -66,7 +61,7 @@ public class EBNLTopK implements Iterator {
 
         for (Object t1 : w) {
             FlatLevelCombination flc_t1 = (FlatLevelCombination) t1;
-//            int compare = preference.compare(t, t1, null);
+            //            int compare = preference.compare(t, t1, null);
             int compare = flc_t.compare(flc_t1);
             // t is worse than t1
             if (compare == IPreference.LESS) {
@@ -85,7 +80,7 @@ public class EBNLTopK implements Iterator {
         for (Object t2 : w) {
             FlatLevelCombination flc_t2 = (FlatLevelCombination) t2;
             int compare = flc_t.compare(flc_t2);
-//            int compare = preference.compare(t, t2, null);
+            //            int compare = preference.compare(t, t2, null);
             // t is better than t2
             if (compare == IPreference.GREATER) {
                 return true;
@@ -101,28 +96,25 @@ public class EBNLTopK implements Iterator {
 
         int i = 0;
         int count = 0;
-//        int idx = 0;
-
-//        ArrayList<Object> w = new ArrayList<>();
 
         boolean cont;
         ArrayList<List<Object>> P = new ArrayList<>();
 
-//        try {
+        //        try {
         while (count < topK && !R.isEmpty()) {
             // initialize Pi = \emptyset
             P.add(i, new ArrayList<>());
             cont = true;
             ArrayList<Object> R1 = new ArrayList<>();
 
-//                int Rsize = R.size();
+            //                int Rsize = R.size();
             ArrayList<Object> w = new ArrayList<>();
             while (cont) {
                 // get first tuple t from R
-//                    int k = 0;
+                //                    int k = 0;
                 Object t = R.remove(0);
 
-//                    while (k < Rsize) {
+                //                    while (k < Rsize) {
                 while (!R.isEmpty() || t != null) {
 
                     // line 10
@@ -132,13 +124,6 @@ public class EBNLTopK implements Iterator {
                     if (dom1(t, w)) {
                         R1.add(t);
 
-//                        for (Object t1 : w) {
-//                            int compare = preference.compare(t, t1, null);
-//                            // t is worse than t1
-//                            if (compare == IPreference.LESS) {
-//                                R1.add(t);
-//                            }
-//                        }
                     } // if t dominates some tuples from w
                     else if (dom2(t, w)) {
                         w.add(t);
@@ -149,10 +134,10 @@ public class EBNLTopK implements Iterator {
                         for (Object v : w) {
                             FlatLevelCombination flc_v = (FlatLevelCombination) v;
                             int compare = flc_t.compare(flc_v);
-//                            int compare = preference.compare(t, v, null);
+                            //                            int compare = preference.compare(t, v, null);
                             // t is better than v
                             if (compare == IPreference.GREATER) {
-//                                    w.remove(v);
+                                //                                    w.remove(v);
                                 tmp.add(v);
                                 R1.add(v);
                             }
@@ -173,13 +158,11 @@ public class EBNLTopK implements Iterator {
 
 
                     // get the next tuple t from R
-//                        ++k;
-//                        if (k < R.size() - 1)
                     if (R.isEmpty())
                         t = null;
                     else
                         t = R.remove(0);
-//                        else R.clear();
+                    //                        else R.clear();
 
                 } // end while
 
@@ -195,7 +178,6 @@ public class EBNLTopK implements Iterator {
             w.clear();
 
             int sizePi = P.get(i).size();
-//                System.out.println("size of stratum " + i + " : " + sizePi);
             count = count + sizePi;
             if (count >= topK)
                 break;
@@ -204,13 +186,7 @@ public class EBNLTopK implements Iterator {
             R = R1;
 
         } // end while
-//        } catch (PreferenceException e) {
-//            e.printStackTrace();
-//        }
 
-//        return P;
-
-//        long begin = System.currentTimeMillis();
         ArrayList<Object> topk_result = new ArrayList<>();
 
         for (List<Object> out : P) {
@@ -219,9 +195,6 @@ public class EBNLTopK implements Iterator {
                 topk_result.add(t);
             }
         }
-
-//        long end = System.currentTimeMillis();
-//        System.out.println("topk_result: " + (end - begin) + "ms");
 
         result = topk_result.iterator();
 

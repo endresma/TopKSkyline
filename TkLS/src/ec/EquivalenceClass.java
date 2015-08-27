@@ -26,16 +26,9 @@ import java.util.*;
 /**
  * An object of this class represents an equivalence class (i.e. a node) of a
  * better-than-graph (BTG). For each node, the level combination identifying the equivalence class and the objects belonging to it are stored.
- *
- * @author Timotheus Preisinger
- * @author me
- * @version 4.0, 28.03.2012, Refactoring
+ * @author endresma
  */
-public class EquivalenceClass implements
-        IEquivalenceClass {
-
-
-
+public class EquivalenceClass implements IEquivalenceClass {
 
 
     /**
@@ -54,6 +47,8 @@ public class EquivalenceClass implements
      * level combination representing this equivalence class
      */
     protected FlatLevelCombination lvl;
+    protected int hash = Integer.MAX_VALUE;
+
 
     /**
      * Constructor. The equivalence class is initialized with its level
@@ -65,8 +60,6 @@ public class EquivalenceClass implements
         this.lvl = lvl;
         this.elements.add(this.lvl);
     }
-
-
 
     @Override
     public void add(FlatLevelCombination level) {
@@ -161,8 +154,6 @@ public class EquivalenceClass implements
 
         return hash;
     }
-
-    protected int hash = Integer.MAX_VALUE;
 
     @Override
     public String toString() {

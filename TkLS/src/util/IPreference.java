@@ -29,19 +29,19 @@ public interface IPreference {
      * returned if and only if <code>o1.equals(o2) == true</code> for two
      * objects passed to. Note that
      */
-    public static final int EQUAL = 0;
+    public final int EQUAL = 0;
 
     /**
      * Expresses that an object is greater than another with respect to the
      * underlying preference. That means that A is preferred to B.
      */
-    public static final int GREATER = 1;
+    public final int GREATER = 1;
 
     /**
      * Expresses that an object A is lesser than another object B with respect
      * to the underlying preference. That means that B is preferred to A.
      */
-    public static final int LESS = -1;
+    public final int LESS = -1;
 
 
     /**
@@ -49,13 +49,13 @@ public interface IPreference {
      * the underlying preference but not identical. Not identical means
      * always return <code>false</code>.
      */
-    public static final int SUBSTITUTABLE = 2;
+    public final int SUBSTITUTABLE = 2;
 
 
     /**
      * Expresses that two objects cannot be compared nor ranked with respect to
      * the underlying preference.
      */
-    public static final int UNRANKED = -2;
+    public final int UNRANKED = -2;
 
 }
