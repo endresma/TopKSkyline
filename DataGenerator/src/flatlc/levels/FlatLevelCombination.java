@@ -20,72 +20,6 @@ package flatlc.levels;
 import java.io.Serializable;
 
 
-/**
- * <p>
- * Object to store the base preference levels generated for an object. The base
- * preference levels are stored in an array of integer values. This object is a
- * less mighty but more performing variation of
- * <code>{@link preference.csv.optimize.LevelCombination}</code>. A
- * <code>FlatLevelCombination</code> only supports Pareto preferences with all
- * contained preferences using regular SV semantics.
- * </p>
- * <p>
- * Therefore, no trees to represent the preference structure are needed. Also,
- * the level values always are integers.
- * </p>
- * <p/>
- * <p>
- * Just like their big brothers,
- * <code>{@link preference.csv.optimize.LevelCombination}</code> objects,
- * instances of <code>this</code> type are resettable. This is to minimize the
- * number of instances that have to be created and removed by the garbage
- * collector. The management of existing <code>FlatLevelCombination</code>
- * objects may be done by a <code>FlatLevelManager</code>
- * </p>
- * <p/>
- * <p>
- * By the restriction for the preference instances of this class are based on,
- * the always support maximum level values.
- * </p>
- * <p/>
- * <p>
- * It is clear that <code>FlatLevelCombination</code> objects compared to each
- * other must use the same <code>maxLevels</code> and <code>idMults</code>.
- * Otherwise, they would not represent objects rated by the same preference. It
- * may be useful not to directly create <code>FlatLevelCombination</code>
- * objects but to use a <code>FlatLevelManager</code> object that takes care of
- * such issues.
- * </p>
- * <p/>
- * <p>
- * Each <code>FlatLevelCombination</code> object also is an element in a list of
- * <code>FlatLevelCombination</code> objects. The list can be traversed by the
- * <code>next()</code> method. New elements are appended to the list by the
- * method <code>append(FlatLevelCombination)</code>. <code>getFirst()</code> and
- * <code>getLast()</code> offer access to the first rsp. last list element. <br/>
- * Iteration over a list of <code>FlatLevelCombination</code> objects looks like
- * the following:
- * <p/>
- * <pre>
- *   FlatLevelCombination flc = ...
- *
- *   do {
- *     ...
- *   } while ((flc = flc.getNext()) != null);
- * </pre>
- * <p/>
- * For the iteration it is crucial that a <code>FlatLevelCombination</code> is
- * no <code>java.util.Iterator</code>. Calling the <code>getNext()</code> method
- * of a <code>FlatLevelCombination</code> object will always return the same
- * object. To iterate over a whole list, the current object has to be changed to
- * the next one.
- * </p>
- *
- * @author Timotheus Preisinger
- * @author endresma
- * @version 1.0, 2006-12-12
- */
-
 public class FlatLevelCombination implements Serializable {
 
     public static final int EQUAL = 0;
@@ -99,51 +33,45 @@ public class FlatLevelCombination implements Serializable {
      * counter for the number of created instances
      */
     protected static int instanceCounter = 0;
-
-    /**
-     * number of current instance
-     */
-    protected int instanceNo = 0;
-
-    /**
-     * result of the level function for each value
-     */
-    public int[] level;
-
-    /**
-     * values which's preference level has been computed
-     */
-    protected Object[] value;
-
-    /**
-     * the generated overall level value for this object
-     */
-    protected int overallLevel;
-
-    /**
-     * the generated left or right overall level value for this object
-     */
-    protected int leftOverallLevel;
-    protected int rightOverallLevel;
-
-    /**
-     * the generated unique integer identifier for this object
-     */
-    protected int identifier = -1;
-
     /**
      * array for storing maximum level values
      */
     protected final int[] maxLevels;
-
     /**
      * array for storing multiplicators for the computation of unique integer
      * identifiers for level combinations
      */
     protected final int[] idMults;
-
+    /**
+     * result of the level function for each value
+     */
+    public int[] level;
+    /**
+     * number of current instance
+     */
+    protected int instanceNo = 0;
+    /**
+     * values which's preference level has been computed
+     */
+    protected Object[] value;
+    /**
+     * the generated overall level value for this object
+     */
+    protected int overallLevel;
+    /**
+     * the generated left or right overall level value for this object
+     */
+    protected int leftOverallLevel;
+    protected int rightOverallLevel;
+    /**
+     * the generated unique integer identifier for this object
+     */
+    protected int identifier = -1;
     protected int timeStamp;
-
+    /**
+     * split position for semi-pareto
+     */
+    protected int splitPosition = 0;
     /**
      * first element of this level combination list
      */
@@ -156,11 +84,7 @@ public class FlatLevelCombination implements Serializable {
      * last element of this level combination list
      */
     FlatLevelCombination last;
-
-    /**
-     * split position for semi-pareto
-     */
-    protected int splitPosition = 0;
+    private int hash = -1;
 
     /**
      * Constructor.
@@ -176,9 +100,9 @@ public class FlatLevelCombination implements Serializable {
      * @param idMults   multiplicators for unique id generation
      */
     public FlatLevelCombination(int[] maxLevels, int[] idMults) {
-        this(new int[maxLevels.length], new Object[maxLevels.length],
-                maxLevels, idMults);
+        this(new int[maxLevels.length], new Object[maxLevels.length], maxLevels, idMults);
     }
+
 
     /**
      * @param level
@@ -188,10 +112,6 @@ public class FlatLevelCombination implements Serializable {
         this(level, value, null, null);
     }
 
-    // public FlatLevelCombination(int[] level, Object[] value, int
-    // splitPosition) {
-    // this(level, value, null, null, splitPosition);
-    // }
 
     /**
      * @param level     array for level values
@@ -199,15 +119,10 @@ public class FlatLevelCombination implements Serializable {
      * @param maxLevels array for maximum level values
      * @param idMults   multiplicators for the computation of a unique id
      */
-    public FlatLevelCombination(int[] level, Object[] value, int[] maxLevels,
-                                int[] idMults) {
+    public FlatLevelCombination(int[] level, Object[] value, int[] maxLevels, int[] idMults) {
         this.level = level;
         this.value = value;
         // consistency check
-        // if (level.length > value.length) {
-        // throw new
-        // IllegalArgumentException("no object values for all level values");
-        // }
         this.maxLevels = maxLevels;
         this.idMults = idMults;
         this.instanceNo = ++FlatLevelCombination.instanceCounter;
@@ -220,43 +135,6 @@ public class FlatLevelCombination implements Serializable {
         last = this;
 
     }
-
-    /**
-     *
-     * @param level
-     *            array for level values
-     * @param value
-     *            array for base values
-     * @param maxLevels
-     *            array for maximum level values
-     * @param idMults
-     *            multiplicators for the computation of a unique id
-     * @param splitPosition
-     *            position where Semi-Pareto splits the input
-     */
-    // public FlatLevelCombination(int[] level, Object[] value, int[] maxLevels,
-    // int[] idMults, int splitPosition) {
-    // this.level = level;
-    // this.value = value;
-    // // consistency check
-    // // if (level.length > value.length) {
-    // // throw new
-    // // IllegalArgumentException("no object values for all level values");
-    // // }
-    // this.maxLevels = maxLevels;
-    // this.idMults = idMults;
-    // this.instanceNo = ++FlatLevelCombination.instanceCounter;
-    //
-    // this.splitPosition = splitPosition;
-    //
-    // // compute overall level
-    // computeOverallLevel();
-    //
-    // // list settings
-    // first = this;
-    // last = this;
-    //
-    // }
 
     /**
      * Copy constructor. The level values of the given instance will be used for
@@ -296,16 +174,6 @@ public class FlatLevelCombination implements Serializable {
         return this.level.length;
     }
 
-
-    public int[] getIdMults() {
-        return idMults;
-    }
-
-    public int[] getMaxLevels() {
-        return maxLevels;
-    }
-
-
     /**
      * Returns the level value for the base value with the specified index.
      *
@@ -325,7 +193,6 @@ public class FlatLevelCombination implements Serializable {
     public int[] getLevelCombination() {
         return this.level;
     }
-
 
     /**
      * Returns the level combination of this object as an Object
@@ -398,7 +265,6 @@ public class FlatLevelCombination implements Serializable {
         return this.value[index];
     }
 
-
     public float getFloatValue(int index) {
         Object val = getValue(index);
         return ((Integer) val).floatValue();
@@ -423,13 +289,6 @@ public class FlatLevelCombination implements Serializable {
      * @return the result of the comparison
      */
 
-    public int leftCompare(FlatLevelCombination compareTo) {
-        return compare(compareTo, true);
-    }
-
-    public int rightCompare(FlatLevelCombination compareTo) {
-        return compare(compareTo, false);
-    }
 
     public int compare(FlatLevelCombination compareTo) {
         return compare(compareTo.level, 0, level.length);
@@ -441,35 +300,26 @@ public class FlatLevelCombination implements Serializable {
             return compare(compareTo);
         } else {
             int leftResult = compare(compareTo.level, 0, splitPosition);
-            int rightResult = compare(compareTo.level, splitPosition,
-                    level.length);
+            int rightResult = compare(compareTo.level, splitPosition, level.length);
 
             if (left) { // LSP
                 // better in the first and better or equal in the second
                 // component
-                if (leftResult == GREATER
-                        && (rightResult == GREATER
-                        || rightResult == SUBSTITUTABLE || rightResult == EQUAL))
+                if (leftResult == GREATER && (rightResult == GREATER || rightResult == SUBSTITUTABLE || rightResult == EQUAL))
                     return GREATER;
 
                 // worse in the first and worse or equal in the second component
-                if (leftResult == LESS
-                        && (rightResult == LESS
-                        || rightResult == SUBSTITUTABLE || rightResult == EQUAL))
+                if (leftResult == LESS && (rightResult == LESS || rightResult == SUBSTITUTABLE || rightResult == EQUAL))
                     return LESS;
 
             } else { // RSP
                 // better in the first and better or equal in the second
                 // component
-                if (rightResult == GREATER
-                        && (leftResult == GREATER
-                        || leftResult == SUBSTITUTABLE || leftResult == EQUAL))
+                if (rightResult == GREATER && (leftResult == GREATER || leftResult == SUBSTITUTABLE || leftResult == EQUAL))
                     return GREATER;
 
                 // worse in the first and worse or equal in the second component
-                if (rightResult == LESS
-                        && (leftResult == LESS
-                        || leftResult == SUBSTITUTABLE || leftResult == EQUAL))
+                if (rightResult == LESS && (leftResult == LESS || leftResult == SUBSTITUTABLE || leftResult == EQUAL))
                     return LESS;
             }
 
@@ -510,18 +360,12 @@ public class FlatLevelCombination implements Serializable {
         return this;
     }
 
-    /**
-     * Is it a real or pseudo FlatLevelCombination, for StairCase-PruningRegion
-     * only
-     */
-    public boolean isRealFLC() {
-        return this.value != null;
-    }
+
 
     public String toString() {
         StringBuffer result = new StringBuffer();
         result.append('[');
-//        result.append(this.getIdentifier());
+        //        result.append(this.getIdentifier());
         result.append("(id=");
         result.append(this.instanceNo);
 
@@ -550,8 +394,6 @@ public class FlatLevelCombination implements Serializable {
         return true;
     }
 
-    private int hash = -1;
-
     /**
      * Computes the hash code of a level object.
      */
@@ -579,24 +421,14 @@ public class FlatLevelCombination implements Serializable {
         if (lvl.level.length != this.level.length)
             return false;
         for (int i = 0; i < this.level.length; i++) {
-            if (this.level[i] != lvl.level[i]
-                    || !this.value[i].equals(lvl.value[i])) {
+            if (this.level[i] != lvl.level[i] || !this.value[i].equals(lvl.value[i])) {
                 return false;
             }
         }
         return true;
     }
 
-    /**
-     * Returns <code>true</code>, as this this level object does support maximum
-     * level values. This is essential for the computation of a pruning level,
-     * uncomparable and worse equivalence classes
-     *
-     * @return <code>true</code>
-     */
-    public boolean supportsMaxLevels() {
-        return true;
-    }
+
 
     /**
      * Returns the overall level from which on tupels need not be compared
@@ -689,33 +521,20 @@ public class FlatLevelCombination implements Serializable {
         return ec;
     }
 
-    /**
-     * Returns the number of base level value combinations (equivalence classes)
-     * which are uncomparable to the objects with this object's level. This
-     * method will only return a correct result if the preference the level is
-     * based on is a Pareto preference containing only base preferences.
-     *
-     * @return the number of dominating level value combinations
-     */
-    public int getUncomparableEquivalenceClasses() {
-        if (splitPosition != 0)
-            throw new UnsupportedOperationException();
-        return getEquivalenceClasses() - getWorseEquivalenceClasses()
-                - getBetterEquivalenceClasses();
-    }
+
 
     /**
      * Computes a unique identifier for this level combination. Therefore, the
      * maximum level values of all contained base preferences are used as bases
      * for a numerical system.
-     * <p>
+     * <p/>
      * Example: We have two base preferences with maximum level values m1 = 3,
      * m2 = 4. A node c = (c1, c2) has the following unique identifier:
-     * <p>
+     * <p/>
      * <code>c2 + (m2 + 1) * c1</code>.
-     * <p>
+     * <p/>
      * The node (2, 1) has the unique identifier <code>1 + 5 * 2 = 11</code>.
-     * <p>
+     * <p/>
      * Beginning from the last value, each level is added to the overall sum
      * after being multiplied with the maximum level value plus one of all level
      * value following to it. In our example, 1 is the rightmost level value. It
@@ -725,11 +544,6 @@ public class FlatLevelCombination implements Serializable {
      */
     private int computeIdentifier() {
         this.identifier = 0;
-//        if(idMults == null) {
-//            this.identifier = -1;
-//            return this.identifier;
-//        }
-
         for (int i = 0; i < idMults.length; i++) {
             this.identifier += idMults[i] * level[i];
         }
@@ -791,17 +605,7 @@ public class FlatLevelCombination implements Serializable {
         last = this;
     }
 
-    /**
-     * Inserts an element right after the current list element.
-     *
-     * @param lc the element to insert
-     */
-    public void insert(FlatLevelCombination lc) {
-        lc.next = next;
-        next = lc;
-        lc.last = last;
-        // lc.first = first;
-    }
+
 
     /**
      * Returns the first element of this list.
@@ -813,14 +617,7 @@ public class FlatLevelCombination implements Serializable {
         return first;
     }
 
-    /**
-     * Returns the last element of this list.
-     *
-     * @return the last element of this list
-     */
-    public FlatLevelCombination getLast() {
-        return last;
-    }
+
 
     /**
      * Get the serial number of the object. Every object sets the number of

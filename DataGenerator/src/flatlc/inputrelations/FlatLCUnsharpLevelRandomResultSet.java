@@ -25,55 +25,6 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 
 
-/**
- * <p>
- * This class represents a result set created of random numbers. The objects
- * returned will all belong to a level which can be specified when constructing
- * the object or some levels near it. If no level is given, all elements will
- * belong to the broadest level of the preference and its surroundings. This is
- * the middle of the BTG (and near it).
- * </p>
- * <p>
- * The tuples will be distributed equally on the nodes of this level (or these
- * levels).
- * </p>
- * 
- * <p>
- * As the seeds for the random number generation are fixed, the numbers in a
- * specific row will always be the same. This makes it possible to use a large
- * number of statistically independent "rows" without having to store them on
- * disc but with total reproducibility.
- * 
- * The computed values will be wrapped into <code>FlatLevelCombination</code>
- * objects and used as level values. The minimum value therefore is the , the
- * maximum value can be given in the constructor. The default maximum level
- * value is 9, leading to 10 different level values for each of the contained
- * values.
- * </p>
- * <p>
- * Each row is returned as an <code>FlatLevelCombination</code> object. The
- * preference object this level combination holds is an array of
- * <code>int</code> values. There is one column <code>id</code> representing a
- * unique id for each tuple. The <code>id</code>s are consecutive numbers. The
- * other column names are <code>colX</code>, where <code>X</code> is the number
- * of the column (starting at <code>0</code>).
- * </p>
- * <p>
- * Returning <code>FlatLevelCombination</code> object is one of the big
- * differences from <code>RandomResultSet</code>. Returning objects belonging to
- * only a specified number of levels is the main difference from
- * <code>FlatLCRandomResultSet</code>.
- * </p>
- * <p>
- * Additionally, this result set implementation is also capable of pre-sorting
- * the created random result objects.
- * </p>
- * 
- * @see RandomResultSet
- * @see FlatLCRandomResultSet
- * @author Timotheus Preisinger
- * @author endresma
- */
 public class FlatLCUnsharpLevelRandomResultSet extends FlatLCResultSetA {
     /**
      * default maxumum for column (=level) values
@@ -158,7 +109,6 @@ public class FlatLCUnsharpLevelRandomResultSet extends FlatLCResultSetA {
      *            number of columns of random data
      * @param rows
      *            number of rows
-     * @see FlatLCRandomResultSet.DEFAULT_MAX
      */
     public FlatLCUnsharpLevelRandomResultSet(int cols, int rows) {
 	this(cols, rows, (DEFAULT_MAX * cols) / 2, 0, DEFAULT_MAX);
@@ -174,7 +124,6 @@ public class FlatLCUnsharpLevelRandomResultSet extends FlatLCResultSetA {
      *            number of rows
      * @param lvl
      *            overall level of the tuples produced
-     * @see FlatLCRandomResultSet.DEFAULT_MAX
      */
     public FlatLCUnsharpLevelRandomResultSet(int cols, int rows, int lvl) {
 	this(cols, rows, lvl, 0);

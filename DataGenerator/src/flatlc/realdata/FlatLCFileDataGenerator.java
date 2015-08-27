@@ -41,25 +41,20 @@ public class FlatLCFileDataGenerator extends FlatLCResultSetA {
      * meta data object
      */
     ResultSetMetaData meta;
-
+    // rows is in the super class
+    //    private int rows;
+    int currentRowInMem = 0;
     private String filename;
     private int col;
-    // rows is in the super class
-//    private int rows;
-    int currentRowInMem = 0;
-
-
     private ArrayList<Object> elements;
 
     private ArrayList<int[]> rawData = new ArrayList<>();
     // min and max value for each column
-//    private double[] minLevels;
+    //    private double[] minLevels;
     private int[] maxValues;
 
     // multIDs
     private int[] multIDs;
-
-
 
 
     public FlatLCFileDataGenerator(String filename, int inputSize, int[] maxValues) {
@@ -93,17 +88,16 @@ public class FlatLCFileDataGenerator extends FlatLCResultSetA {
             canonicalPath = new File(".").getCanonicalPath();
 
             OS = System.getProperty("os.name");
-            if(OS.equals("Mac OS X")) {
+            if (OS.equals("Mac OS X")) {
                 prefix = canonicalPath + "/DataGenerator/data/";
             } else {
-                prefix = canonicalPath + "/.." + "/DataGenerator/data/";
+                prefix = canonicalPath + "/data/";
             }
 
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
 
         return (prefix + filename);
@@ -155,19 +149,13 @@ public class FlatLCFileDataGenerator extends FlatLCResultSetA {
 
         // read raw data into ArrayList
         for (int i = 0; i < rows && sc.hasNext(); ++i) {
-//            System.out.println("row: " + i);
-//            sc.nextInt();
-//            System.out.println(i);
             int[] tuple = new int[col];
             for (int j = 0; j < col; ++j) {
                 double val = sc.nextDouble();
 
                 tuple[j] = (int) val;
-//                rawData.add(sc.nextDouble());
             }
             rawData.add(tuple);
-//            if (rows > 2400000)
-//                printObject(tuple);
             sc.nextLine();
         }
 
@@ -176,12 +164,6 @@ public class FlatLCFileDataGenerator extends FlatLCResultSetA {
 
 
 
-
-
-    @Override
-    public double[] nextVal() {
-        throw new RuntimeException("getMetaData not supported in " + getClass());
-    }
 
     @Override
     public Object getMetaData() {
@@ -255,7 +237,6 @@ public class FlatLCFileDataGenerator extends FlatLCResultSetA {
     public boolean supportsReset() {
         return true;
     }
-
 
 
 }

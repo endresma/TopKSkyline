@@ -22,14 +22,7 @@ import mdc.MetaDataCursor;
 import java.util.ArrayList;
 
 
-/**
- * Abstract class for all flat level results
- * @author endresma
- *
- */
-
-public abstract class FlatLCResultSetA implements MetaDataCursor,
-        PaintableResultSet {
+public abstract class FlatLCResultSetA implements MetaDataCursor {
 
     /**
      * number of rows that will be produced
@@ -37,7 +30,7 @@ public abstract class FlatLCResultSetA implements MetaDataCursor,
     protected int rows;
 
     public int getSize() {
-	return rows;
+        return rows;
     }
 
     public abstract ArrayList<Object> getElements();

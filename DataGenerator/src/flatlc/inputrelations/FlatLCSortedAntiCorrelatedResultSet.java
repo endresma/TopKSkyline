@@ -23,18 +23,6 @@ import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 
-/**
- * This class shows only one difference from its superclass:
- * 
- * 
- * The random objects that will be returned by the <code>peek</code> or
- * <code>next()</code> method are pre-computed and sorted in ascending order of
- * a given <code>Comparator</code>.
- * 
- * @see FlatLCAntiCorrelatedResultSet
- * @author Timotheus Preisinger
- * @author endresma
- */
 public class FlatLCSortedAntiCorrelatedResultSet extends
 		FlatLCAntiCorrelatedResultSet {
 	/**
@@ -57,7 +45,6 @@ public class FlatLCSortedAntiCorrelatedResultSet extends
 	 *            number of rows
 	 * @param comp
 	 *            comparator to order the produced flat level combinations
-	 * @see FlatLCRandomResultSet.DEFAULT_MAX
 	 */
 	public FlatLCSortedAntiCorrelatedResultSet(int cols, int rows,
 			Comparator comp) {

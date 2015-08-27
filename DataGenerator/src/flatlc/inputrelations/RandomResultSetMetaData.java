@@ -21,13 +21,7 @@ import java.io.Serializable;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-/**
- * Simple implementation of a {@link ResultSetMetaData} for use in algorithm
- * tests.
- *
- * @author Timotheus Preisinger
- * @author endresma
- */
+
 public class RandomResultSetMetaData implements ResultSetMetaData, Serializable {
     String[] columns;
 

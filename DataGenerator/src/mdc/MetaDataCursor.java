@@ -18,10 +18,48 @@
 package mdc;
 
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-public interface MetaDataCursor extends Cursor {
+public interface MetaDataCursor extends Iterator<Object> {
 
 
-	Object getMetaData();
+    Object getMetaData();
+
+
+    void open();
+
+
+    void close();
+
+    boolean hasNext() throws IllegalStateException;
+
+
+    Object next() throws IllegalStateException, NoSuchElementException;
+
+
+    Object peek() throws IllegalStateException, NoSuchElementException, UnsupportedOperationException;
+
+
+    boolean supportsPeek();
+
+
+    void remove() throws IllegalStateException, UnsupportedOperationException;
+
+
+    boolean supportsRemove();
+
+
+    void update(Object object) throws IllegalStateException, UnsupportedOperationException;
+
+
+    boolean supportsUpdate();
+
+
+    void reset() throws UnsupportedOperationException;
+
+
+    boolean supportsReset();
+
 
 }

@@ -24,37 +24,6 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
-/**
- * <p>
- * This class represents a result set created of anti-correlated random numbers.
- * This means, tuples with a high level in one component will tend to have a low
- * value in the other components.
- * </p>
- * <p>
- * As the seeds for the random number generation are fixed, the numbers in a
- * specific row will always be the same. This makes it possible to use a large
- * number of statistically independent "rows" without having to store them on
- * disc but with total reproducibility.
- * <p/>
- * The computed values will be wrapped into <code>FlatLevelCombination</code>
- * objects and used as level values. The minimum value therefore is 0 (zero),
- * the maximum value can be given in the constructor. The default maximum level
- * value is 9, leading to 10 different level values for each of the contained
- * values.
- * </p>
- * <p>
- * Each row is returned as an <code>FlatLevelCombination</code> object. The
- * preference object this level combination holds is an array of
- * <code>int</code> values. There is one column <code>id</code> representing a
- * unique id for each tuple. The <code>id</code>s are consecutive numbers. The
- * other column names are <code>colX</code>, where <code>X</code> is the number
- * of the column (starting at <code>0</code>).
- * </p>
- *
- * @author Timotheus Preisinger
- * @author endresma
- * @see FlatLCRandomResultSet
- */
 public class FlatLCAntiCorrelatedResultSet extends FlatLCResultSetA {
     /**
      * default maxumum for column (=level) values
