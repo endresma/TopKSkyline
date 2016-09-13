@@ -6,6 +6,5 @@ Source code for multi-level and top-k Skyline computation as published in the pa
 
 The folder DataGenerator contains files to generate input data for the algorithms.
 TkLS contains the multi-level and top-k Skyline algorithms as well as EBNL and ESFS as published in
-Brando, Goncalves, Gonzalez, *Evaluating Top-k Skyline Queries over Relational Databases*
-ParallelTopK contains a the implementation of a parallel top-k algorithm. 
+Brando, Goncalves, Gonzalez, *Evaluating Top-k Skyline Queries over Relational Databases*. ParallelTopK contains an implementation of a parallel top-k algorithm. 
 
