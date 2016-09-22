@@ -91,7 +91,8 @@ public class FlatLCFileDataGenerator extends FlatLCResultSetA {
             if (OS.equals("Mac OS X")) {
                 prefix = canonicalPath + "/DataGenerator/data/";
             } else {
-                prefix = canonicalPath + "/data/";
+                //prefix = canonicalPath + "/data/";
+            	prefix = "";
             }
 
 
@@ -101,7 +102,6 @@ public class FlatLCFileDataGenerator extends FlatLCResultSetA {
 
 
         return (prefix + filename);
-
     }
 
 

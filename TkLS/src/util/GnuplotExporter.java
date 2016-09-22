@@ -40,8 +40,10 @@ public class GnuplotExporter {
                 VIEWER = MAC_VIEWER;
                 GNUPLOT = MAC_GNUPLOT;
             } else {
-                VIEWER = LINUX_VIEWER;
+            	VIEWER = LINUX_VIEWER;
                 GNUPLOT = LINUX_GNUPLOT;
+            	//VIEWER = "";
+                //GNUPLOT = "C:/Tests/gnuplot/bin/wgnuplot.exe";
             }
     }
 
@@ -92,7 +94,7 @@ public class GnuplotExporter {
      * @param xylabels
      * @param title
      */
-    public GnuplotExporter(String path, String datFileName, String pltFileName, String[] labels, String[] xylabels, String[] title) {
+    public GnuplotExporter(String path, String datFileName, String pltFileName, String[] labels, String[] xylabels, String[] title, String type) {
 
         for (int i = 0; i < title.length; i++) {
             this.diaTitle += title[i];
@@ -103,15 +105,35 @@ public class GnuplotExporter {
         this.path = path;
         this.datFile = new File(datFileName + diaTitle);
         this.pltFile = new File(pltFileName + diaTitle);
+
+        
         this.labels = labels;
         this.title = title;
         if (xylabels != null) {
             this.xlabel = xylabels[0];
             this.ylabel = xylabels[1];
         }
-
         this.createFile();
-        writePltFile();
+        switch(type){
+	        case "rowstacked":	
+	        	writeRowstacked();
+	        	break;
+	        case "plt":
+	        	writePltFile();
+	        	break;
+	        case "box":
+	        	System.out.println("Box!");
+	        	writeBoxFile();
+	        	break;
+	        case "partly rowstacked":
+	        	writePartlyRowstacked();
+	        	break;
+	        case "errorbar":
+	        	writeErrorbar();
+	        	break;
+	        default:
+	        	break;	
+        }
     }
 
     /**
@@ -119,7 +141,9 @@ public class GnuplotExporter {
      */
     private void createFile() {
         try {
+        	//System.out.println("New datFile: " + path + datFile);
             datOut = new BufferedWriter(new FileWriter(path + datFile));
+            //System.out.println("New pltFile: " + path + pltFile);
             pltOut = new BufferedWriter(new FileWriter(path + pltFile));
         } catch (IOException e) {
             printException(e);
@@ -159,32 +183,8 @@ public class GnuplotExporter {
 
     private void writePltFile() {
         try {
-            // pltOut.write("set output \"" + epsFile + "\"");
-            pltOut.write("set output \"" + path + datFile + ".jpg" + "\"");
-            pltOut.newLine();
-            //
-            pltOut.write("set terminal jpeg enhanced font 'Helvetica, " +
-                    "12' linewidth 4");
-            pltOut.newLine();
-
-            pltOut.write("set title \"" + datFile + "\"");
-            pltOut.newLine();
-
-            pltOut.write("set xlabel \"" + xlabel + "\"");
-            pltOut.newLine();
-
-            pltOut.write("set ylabel \"" + ylabel + "\"");
-            pltOut.newLine();
-
-            pltOut.write("set key left");
-            pltOut.newLine();
-
-            pltOut.write("set pointsize 2");
-            pltOut.newLine();
-
-            pltOut.write("set datafile missing '?'");
-            pltOut.newLine();
-
+            setStuff();
+            
             // plot command
             pltOut.write("plot");
 
@@ -205,7 +205,208 @@ public class GnuplotExporter {
             printException(e);
         }
     }
+     
+    
+    private void setStuff(){
+    	try{
+    		// pltOut.write("set output \"" + epsFile + "\"");
+            pltOut.write("set output \"" + path + datFile + ".jpg" + "\"");
+            pltOut.newLine();
+            //
+            pltOut.write("set terminal jpeg enhanced font 'Helvetica, " +
+                    "15' linewidth 2");
+            pltOut.newLine();
 
+            pltOut.write("set title \"" + datFile + "\"");
+            pltOut.newLine();
+
+            pltOut.write("set xlabel \"" + xlabel + "\"");
+            pltOut.newLine();
+
+            pltOut.write("set ylabel \"" + ylabel + "\"");
+            pltOut.newLine();
+
+            //pltOut.write("set key left");
+            //pltOut.newLine();
+            
+            pltOut.write("set xtics rotate by -45 ;");
+    		pltOut.newLine();
+
+            pltOut.write("set pointsize 2");
+            pltOut.newLine();
+
+            pltOut.write("set datafile missing '?'");
+            pltOut.newLine();
+    	}
+    	catch(IOException e){
+    		printException(e);
+    	}
+    	
+    }
+    
+    
+    private void writePartlyRowstacked(){
+    	try{   		  		
+    		setStuff();
+    		pltOut.newLine();
+    		
+    		pltOut.write("set boxwidth 0.75 absolute");
+    		pltOut.newLine();
+    		pltOut.write("set style fill solid 0.5");
+    		pltOut.newLine();
+    		pltOut.write("set style histogram rowstacked");
+    		pltOut.newLine();
+    		pltOut.write("set style data histograms");
+    		pltOut.newLine();
+    		pltOut.write("set offset 0,2,0,0");
+    		pltOut.newLine(); 		
+    		pltOut.newLine(); 	
+    		
+    		pltOut.write("plot ");
+    		
+    		File tempFile = new File(datFile.getName().replace("Phases", "Alg"));
+    		
+    		for (int i = 0; i < labels.length; i++) {
+    			
+    			if(i == 0){
+    				pltOut.write("newhistogram \"" + labels[i] + "\" lt 1, \"" + path + tempFile + "\" index " + i + " u 2:xtic(1) title \"Complete\" lc rgb \"gray\",");
+    			}
+    			else{
+    				pltOut.write("newhistogram \"" + labels[i] + "\" lt 1, \"" + path + tempFile  + "\" index " + i + " u 2:xtic(1) notitle lc rgb \"gray\",");
+    			}
+    			
+    			if(i == 0){
+    				pltOut.write("newhistogram \"\" lt 1, \"" + path + datFile + "\""
+        					+ " index " + i + " u 2:xtic(1) title \"Init\", '' index " + i + " u 3 title \"phase1\", '' index " + i + " u 4 title \"phase2\", '' index " + i + " u 5 title \"phase3\", '' index " + i + " u 6 title \"Rest\"");
+    			}
+    			else{
+    				pltOut.write("newhistogram \"\" lt 1, \"" + path + datFile + "\""
+    					+ " index " + i + " u 2:xtic(1) notitle, '' index " + i + " u 3 notitle, '' index "+ i + " u 4 notitle, '' index " + i + " u 5 notitle, '' index " + i + " u 6 notitle");
+    			}  			
+    			
+    			if(i < labels.length){
+    				pltOut.write(", ");
+    			}
+    		}
+    	}
+    	catch(IOException e){
+    		printException(e);
+    	}
+    }
+    
+    
+    private void writeErrorbar(){
+    	try{
+    		setStuff();
+
+    		pltOut.write("set multiplot");
+    		pltOut.newLine();
+    		
+    		pltOut.write("set key out top horiz");
+    		pltOut.newLine();
+    		
+    		pltOut.write("set logscale y 10");
+    		pltOut.newLine();
+    		
+    		pltOut.write("set logscale x 10");
+    		pltOut.newLine();
+    		
+    		pltOut.write("set pointsize 1");
+    		pltOut.newLine();
+    		
+    		pltOut.write("plot");
+    		
+    		//labels: algorithms (ebnl, esfs, tkls, sequential, parallel)
+    		
+    		String color[] = new String[]{"brown", "red", "purple", "blue", "green", "grey"};
+    		
+    		for(int i = 0; i < labels.length; i++){
+    			   			
+    			//only calling this function when we reached the last label -> datFileName = datFile + labels[labels.length-1]
+    			File tempFile = new File(datFile.getName().replace(labels[labels.length - 1], labels[i]));
+    			
+    			pltOut.write("\"" + path + tempFile + "\" with errorbars title \"" + labels[i] + "\" ls 16 pt 4 lc rgb \"" + color[i] + "\", "
+    					+ "'' with lines title \"\" lc rgb \"" + color[i] + "\"");
+    			
+    			if(i < labels.length - 1){
+    				pltOut.write(", ");
+    			}
+    		}
+    		
+    	}
+    	catch(IOException e){
+    		printException(e);
+    	}
+    }
+    
+    
+    private void writeRowstacked(){
+    	try{
+
+    		setStuff(); 		
+    		
+    		pltOut.write("set boxwidth 0.75 absolute");
+    		pltOut.newLine();
+    		pltOut.write("set style fill solid 0.5");
+    		pltOut.newLine();
+    		pltOut.write("set style histogram rowstacked");
+    		pltOut.newLine();
+    		pltOut.write("set style data histograms");
+    		pltOut.newLine();
+    		//pltOut.write("set offset 0,2,0,0");
+    		//pltOut.newLine(); 		
+    		
+    		pltOut.write("plot ");
+
+    		for (int i = 0; i < labels.length; i++) {
+    			
+    			if(i == 0){
+    				pltOut.write("\"" + path + datFile + "\" using 2:xtic(1) title \"Init\", '' using 3 title \"Phase1\", '' using 4 title \"Phase2\", '' using 5 title \"Phase3\", '' using 6 title \"Rest\"");
+    			}
+    			else{
+    				pltOut.write("\"" + path + datFile + "\" using 2:xtic(1) notitle, '' using 3 notitle, '' using 4 notitle, '' using 5 notitle, '' using 6 notitle");
+    			}
+    			if(i < labels.length){
+    				pltOut.write(", ");
+    			}
+    		}
+
+    	}
+    	catch(IOException e){
+    		printException(e);
+    	}
+    }
+    
+    
+    private void writeBoxFile() {
+        try {
+            setStuff();
+            
+            pltOut.write("set style data histogram");
+            pltOut.newLine();
+            
+            //pltOut.write("set style histogram cluster gap 1");
+            //pltOut.newLine();
+            
+            pltOut.write("set boxwidth 0.85 relative");
+            pltOut.newLine();
+            
+            pltOut.write("set style fill solid 0.75");
+            pltOut.newLine();
+          
+            pltOut.write("plot");
+
+            pltOut.write(" \"" + path + datFile + "\"");
+            
+            //pltOut.write("using 2:xtic(1) title col, '' using 3:xtic(1) title col, '' using 4:xtic(1) title col, '' using 5:xtic(1) title col, '' using 6:xtic(1) title col,");
+            pltOut.write("u 2:xtic(1) notitle");
+
+        } catch (IOException e) {
+            printException(e);
+        }
+    }
+    
+    
     /**
      * write some meta data, additional information, to a separate file
      *
@@ -254,7 +455,7 @@ public class GnuplotExporter {
         try {
 
             String gnu = GNUPLOT + " " + path + pltFile;
-
+            
             Runtime.getRuntime().exec(gnu);
 
         } catch (IOException e) {
@@ -270,21 +471,22 @@ public class GnuplotExporter {
 
         System.out.println("Show runtimeDiagramm");
 
-        try {
+        /*try {
 
-            // String gnu = GNUPLOT + " " + path + pltFile;
+             String gnu = GNUPLOT + " " + path + pltFile;
 
-            // Runtime.getRuntime().exec(gnu);
+             //Runtime.getRuntime().exec(gnu);
 
             String view = VIEWER + " " + path + datFile + ".jpg";
             // System.out.println(view);
-            Runtime.getRuntime().exec("open -a " + view);
-
+            //Runtime.getRuntime().exec("open -a " + view);
+            Runtime.getRuntime().exec("cmd /c "+ path + datFile + ".jpg");
+           
         } catch (IOException e) {
             String msg = e.getMessage();
             System.err.println(e.getMessage());
             e.printStackTrace();
-        }
+        }*/
 
     }
 
