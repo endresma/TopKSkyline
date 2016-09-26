@@ -200,17 +200,7 @@ public class BenchTest {
         		
         //generate input-tuples
         FlatLCResultSetA input = BenchFunctions.getGeneratedInput(n, dims, type);
-
-//for histogram        
-        //EBNL, ESFS, TKLS, SequentialTopK
-        /*ArrayList<ArrayList<ArrayList<Object>>> algResults = BenchFunctions.initResult(4, k.length, iterations);
-        //ParallelTopK
-        ArrayList<ArrayList<ArrayList<Object>>> phaseResults = BenchFunctions.initResult(5, k.length, iterations);
-        //No TkLS if "house"-data is used (too many dimensions)
-        if(type.equalsIgnoreCase("house")){
-        	algResults = BenchFunctions.initResult(3, k.length, iterations);
-        }*/
-//for errorbars        
+       
         ArrayList<ArrayList<ArrayList<Object>>> algResults;
         //tkls doesn't work for house-data (too many dimensions)
         if(type.equalsIgnoreCase("house.txt")){
@@ -237,7 +227,7 @@ public class BenchTest {
         			algResults.get(0).get(j).set(i, (long)AlgorithmTest.runEBNLTopK(input.getElements(), k[j]));        		
             		algResults.get(1).get(j).set(i, (long)AlgorithmTest.runESFSTopK(input.getElements(), k[j]));
         			algResults.get(2).get(j).set(i, (long)AlgorithmTest.runSequentialTopK(input.getElements(), k[j]));
-//for errorbars        		
+       		
             		algResults.get(3).get(j).set(i, (long)AlgorithmTest.runParallelTopK(input.getElements(), k[j], b, mode, c).get(0)); 
             		System.gc();
         			
@@ -253,32 +243,14 @@ public class BenchTest {
             		algResults.get(1).get(j).set(i, (long)AlgorithmTest.runESFSTopK(input.getElements(), k[j]));
         			algResults.get(2).get(j).set(i, (long)AlgorithmTest.runTkLS(input.getElements(), k[j], dimensions));
         			algResults.get(3).get(j).set(i, (long)AlgorithmTest.runSequentialTopK(input.getElements(), k[j]));
-//for errorbars        		
+        		
             		algResults.get(4).get(j).set(i, (long)AlgorithmTest.runParallelTopK(input.getElements(), k[j], b, mode, c).get(0)); 
             		System.gc();
         		}
 
-//for histograms        		
-        		/*ArrayList<Object> times = AlgorithmTest.runParallelTopK(input.getElements(), k[j], b, mode, c);
-        		for(int q = 0; q < times.size(); q++){
-        			phaseResults.get(q).get(j).set(i, times.get(q));
-        		}  
-        		System.gc();*/
         	}
         }
-
-//for histograms        
-        //removing best and worst result
-        /*algResults = BenchFunctions.removeBestAndWorst(algResults);
-        phaseResults = BenchFunctions.removeBestAndWorst(phaseResults);        
-        //add runtimes for every iteration
-        ArrayList<ArrayList<Object>> result = BenchFunctions.addAlgResults(algResults); 
-        ArrayList<ArrayList<Object>> parallelTimes = BenchFunctions.addAlgResults(phaseResults);               
-        //get average runtimes
-        result = BenchFunctions.avgRuntime(result, iterations-2);
-        parallelTimes = BenchFunctions.avgRuntime(parallelTimes, iterations-2);*/        
-        
-//for errorbars        
+      
       //get resulting times in format for errorbars, ignoring best and worst result of every algorithm for every dataSize
         ArrayList<ArrayList<ArrayList<Object>>> result = BenchFunctions.getResultForErrorbars(algResults, k);
         
@@ -296,7 +268,6 @@ public class BenchTest {
         String[] blockLabels = new String[]{"2", "5", "10", "20", "50", "100", "1000"};
         String[] xylabels = new String[]{"TopK", "Runntime(nanoseconds)"};
         String[] title = new String[]{"K", "-"+type};        
-        //BenchWrite.writeToPartlyRowstacked(parallelTimes, result, clusterLabels, blockLabels, xylabels, title);
         BenchWrite.writeValsToErrorbar(result, "C:/Tests/", clusterLabels, blockLabels, xylabels, title);
 	}
 
@@ -324,9 +295,6 @@ public class BenchTest {
         dims.add(new int[]{10, 10, 10});
         dims.add(new int[]{50, 50, 50});
         dims.add(new int[]{100, 100, 100});
-        //dims.add(new int[]{500, 500, 500});
-        //dims.add(new int[]{1000, 1000, 1000});
-        //dims.add(new int[]{5000, 5000, 5000});
         
         //Data for every set of dimensions
         ArrayList<FlatLCResultSetA> input = new ArrayList<FlatLCResultSetA>();
@@ -356,7 +324,6 @@ public class BenchTest {
         
        //first value of every column
         int x[] = new int[]{2, 5, 10, 50, 100};
-        //int x[] = new int[]{50, 100, 500, 1000, 5000};
         
         //get resulting times in format for errorbars, ignoring best and worst result of every algorithm for every maxLevel
         ArrayList<ArrayList<ArrayList<Object>>> result = BenchFunctions.getResultForErrorbars(algResults, x);
@@ -364,11 +331,76 @@ public class BenchTest {
         //write results into datFile, write pltFile and plot diagram
         String[] clusterLabels = new String[]{"ebnl", "esfs", "tkls", "sequential", "parallel"};      
         String[] blockLabels = new String[]{"2", "5", "10", "50", "100"};
-        //String[] blockLabels = new String[]{"50", "100", "500", "1000", "5000"};
         String[] xylabels = new String[]{"MaxLevel", "Runntime(nanoseconds)"};
         String[] title = new String[]{"MaxLevel", "-"+type};       
         BenchWrite.writeValsToErrorbar(result, "C:/Tests/", clusterLabels, blockLabels, xylabels, title);
 	}
+	
+	
+	/**
+	 * Creates partly rowstacked clustered diagram displaying the average runtime of ebnl, esfs, sequentialTopK and parallelTopK for different large maxLevel
+	 * 
+	 * @param type - data-type that should be used for input
+	 * @param iter - number of iterations
+	 * @param m - mode for parallelTopK (1, 2, 3 or 4)
+	 */
+	public static void benchmarkMaxLevelBig(String type, int iter, int m){
+		
+		int iterations = iter + 2;
+        int mode = m;
+        int n = 100000;
+        int k = 10;
+        int c = 16;
+        int b = 1000;
+        
+        //Options for dimensions
+        ArrayList<Object> dims = new ArrayList<Object>();
+       
+        dims.add(new int[]{100, 100, 100});
+        dims.add(new int[]{500, 500, 500});
+        dims.add(new int[]{1000, 1000, 1000});
+        dims.add(new int[]{5000, 5000, 5000});
+        dims.add(new int[]{10000, 10000, 10000});
+        
+        //Data for every set of dimensions
+        ArrayList<FlatLCResultSetA> input = new ArrayList<FlatLCResultSetA>();
+        for(int i = 0; i < dims.size(); i++){
+        	input.add(AlgorithmTest.generateInput(type, n, (int[])dims.get(i)));
+        }
+
+        //initialze results (with (long)0)
+        ArrayList<ArrayList<ArrayList<Object>>> algResults = BenchFunctions.initResult(5, dims.size(), iterations);
+        
+        //get times for every iteration
+        for(int i = 0; i < iterations; i++){
+        	System.out.println("\nIteration " + i + ": ");
+        	System.gc();
+        	for(int j = 0; j < input.size(); j++){
+        		System.out.println("\nmaxLevel: " + ((int[])dims.get(j))[0]);        		
+        		
+        		algResults.get(0).get(j).set(i, (long)AlgorithmTest.runEBNLTopK(input.get(j).getElements(), k));        		
+        		algResults.get(1).get(j).set(i, (long)AlgorithmTest.runESFSTopK(input.get(j).getElements(), k));
+        		algResults.get(2).get(j).set(i, (long)AlgorithmTest.runSequentialTopK(input.get(j).getElements(), k));
+      		
+        		algResults.get(3).get(j).set(i, (long)AlgorithmTest.runParallelTopK(input.get(j).getElements(), k, b, mode, c).get(0));
+        		System.gc();
+         	}
+        }
+        
+       //first value of every column
+        int x[] = new int[]{100, 500, 1000, 5000, 10000};
+        
+        //get resulting times in format for errorbars, ignoring best and worst result of every algorithm for every maxLevel
+        ArrayList<ArrayList<ArrayList<Object>>> result = BenchFunctions.getResultForErrorbars(algResults, x);
+        
+        //write results into datFile, write pltFile and plot diagram
+        String[] clusterLabels = new String[]{"ebnl", "esfs", "tkls", "sequential", "parallel"};              
+        String[] blockLabels = new String[]{"100", "500", "1000", "5000", "10000"};
+        String[] xylabels = new String[]{"MaxLevel", "Runntime(nanoseconds)"};
+        String[] title = new String[]{"MaxLevel", "-"+type};       
+        BenchWrite.writeValsToErrorbar(result, "C:/Tests/", clusterLabels, blockLabels, xylabels, title, true);
+	}
+
 	
 	
 	/**

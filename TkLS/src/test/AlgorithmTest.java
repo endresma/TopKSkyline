@@ -191,6 +191,16 @@ public class AlgorithmTest {
 	        		BenchTest.benchmarkMaxLevel(args[1], Integer.parseInt(args[2]), 1);
 	        	}
 	        	break;
+	        case "maxLevel_big":
+	        	System.out.println("\nMaxLevel - big");
+	        	//type of input-data, iterations
+	        	if(args.length > 3){
+	        		BenchTest.benchmarkMaxLevel(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+	        	}
+	        	else{
+	        		BenchTest.benchmarkMaxLevel(args[1], Integer.parseInt(args[2]), 1);
+	        	}
+	        	break;	
 	        case "d_small":
 	        	System.out.println("\nDimensions (small)");
 	        	//type of input-data, iterations
