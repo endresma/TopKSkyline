@@ -33,7 +33,8 @@ import java.util.List;
  */
 public class ESFSTopK extends EBNLTopK {
 
-
+	
+	
     public ESFSTopK(ArrayList<Object> R, int topK) {
         super(R, topK);
 
@@ -48,6 +49,9 @@ public class ESFSTopK extends EBNLTopK {
         FlatLevelCombination flc_t = (FlatLevelCombination) t;
         for (Object t3 : w) {
             FlatLevelCombination flc_t3 = (FlatLevelCombination) t3;
+            
+            //counter.maxScore++;
+            
             int compare = flc_t.compare(flc_t3);
             //            int compare = preference.compare(t, t3, null);
             // t3 is better than t, i.e. t is worse than t3
@@ -143,7 +147,7 @@ public class ESFSTopK extends EBNLTopK {
         }
 
         result = topk_result.iterator();
-
+        //System.out.println("Final Counter of ESFS: " + counter.maxScore);
     }
 
 

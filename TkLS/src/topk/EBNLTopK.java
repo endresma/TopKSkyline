@@ -22,8 +22,12 @@ import flatlc.levels.FlatLevelCombination;
 import util.IPreference;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+
+import extendedFLC.Score;
 
 /**
  * User: endresma
@@ -40,13 +44,15 @@ public class EBNLTopK implements Iterator {
     protected ArrayList<Object> R;
     protected Iterator result;
 
+    //protected Score counter;
 
     public EBNLTopK(ArrayList<Object> R, int topK) {
 
         this.R = R;
-        //        this.preference = preference;
+         //        this.preference = preference;
         this.topK = topK;
-
+        //this.counter = new Score();
+        //counter.maxScore = 0;
         compute();
     }
 
@@ -62,6 +68,9 @@ public class EBNLTopK implements Iterator {
         for (Object t1 : w) {
             FlatLevelCombination flc_t1 = (FlatLevelCombination) t1;
             //            int compare = preference.compare(t, t1, null);
+            
+            //counter.maxScore++;
+            
             int compare = flc_t.compare(flc_t1);
             // t is worse than t1
             if (compare == IPreference.LESS) {
@@ -79,6 +88,9 @@ public class EBNLTopK implements Iterator {
         FlatLevelCombination flc_t = (FlatLevelCombination) t;
         for (Object t2 : w) {
             FlatLevelCombination flc_t2 = (FlatLevelCombination) t2;
+            
+            //counter.maxScore++;
+            
             int compare = flc_t.compare(flc_t2);
             //            int compare = preference.compare(t, t2, null);
             // t is better than t2
@@ -133,6 +145,9 @@ public class EBNLTopK implements Iterator {
                         FlatLevelCombination flc_t = (FlatLevelCombination) t;
                         for (Object v : w) {
                             FlatLevelCombination flc_v = (FlatLevelCombination) v;
+                            
+                            //counter.maxScore++;
+                            
                             int compare = flc_t.compare(flc_v);
                             //                            int compare = preference.compare(t, v, null);
                             // t is better than v
@@ -197,7 +212,7 @@ public class EBNLTopK implements Iterator {
         }
 
         result = topk_result.iterator();
-
+        //System.out.println("Final counter of EBNL: " + counter.maxScore);
     }
 
 
@@ -224,4 +239,5 @@ public class EBNLTopK implements Iterator {
         throw new UnsupportedOperationException("remove not supported");
 
     }
+
 }

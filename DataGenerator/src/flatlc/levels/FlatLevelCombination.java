@@ -332,7 +332,7 @@ public class FlatLevelCombination implements Serializable {
     private int compare(int[] compareTo, int from, int to) {
         int result = SUBSTITUTABLE;
         for (int i = from; i < to; i++) {
-            if (this.level[i] < compareTo[i]) {
+			if (this.level[i] < compareTo[i]) {
                 // this is better in the current base preference
                 if (result == LESS) {
                     // at least once worse and now better: unranked
