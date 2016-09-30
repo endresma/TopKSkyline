@@ -369,7 +369,7 @@ public class BenchTest {
         }
 
         //initialze results (with (long)0)
-        ArrayList<ArrayList<ArrayList<Object>>> algResults = BenchFunctions.initResult(5, dims.size(), iterations);
+        ArrayList<ArrayList<ArrayList<Object>>> algResults = BenchFunctions.initResult(4, dims.size(), iterations);
         
         //get times for every iteration
         for(int i = 0; i < iterations; i++){
@@ -394,10 +394,10 @@ public class BenchTest {
         ArrayList<ArrayList<ArrayList<Object>>> result = BenchFunctions.getResultForErrorbars(algResults, x);
         
         //write results into datFile, write pltFile and plot diagram
-        String[] clusterLabels = new String[]{"ebnl", "esfs", "tkls", "sequential", "parallel"};              
+        String[] clusterLabels = new String[]{"ebnl", "esfs", "sequential", "parallel"};              
         String[] blockLabels = new String[]{"100", "500", "1000", "5000", "10000"};
         String[] xylabels = new String[]{"MaxLevel", "Runntime(nanoseconds)"};
-        String[] title = new String[]{"MaxLevel", "-"+type};       
+        String[] title = new String[]{"BigLevel", "-"+type};       
         BenchWrite.writeValsToErrorbar(result, "C:/Tests/", clusterLabels, blockLabels, xylabels, title, true);
 	}
 
