@@ -469,7 +469,7 @@ public class GnuplotExporter {
      */
     public void showRuntimeDiagram() {
 
-        System.out.println("Show runtimeDiagramm");
+        //System.out.println("Show runtimeDiagramm");
 
         /*try {
 
