@@ -132,7 +132,7 @@ public class AlgorithmTest {
 
     	
     	
-        if(args.length < 3){
+    	if(args.length < 3){
         	System.out.println("Missing Arguments!");
         	System.out.println("\n<benchmark> <datatype> <iterations>");
         	System.out.println("<benchmark>: b, n, k, d_small, d_big, c");
@@ -195,10 +195,10 @@ public class AlgorithmTest {
 	        	System.out.println("\nMaxLevel - big");
 	        	//type of input-data, iterations
 	        	if(args.length > 3){
-	        		BenchTest.benchmarkMaxLevel(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+	        		BenchTest.benchmarkMaxLevelBig(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]));
 	        	}
 	        	else{
-	        		BenchTest.benchmarkMaxLevel(args[1], Integer.parseInt(args[2]), 1);
+	        		BenchTest.benchmarkMaxLevelBig(args[1], Integer.parseInt(args[2]), 1);
 	        	}
 	        	break;	
 	        case "d_small":
@@ -235,7 +235,8 @@ public class AlgorithmTest {
 	        	System.out.println("\nMode");
 	        	//type of input-data, iterations
 	        	BenchTest.benchmarkMode(args[1], Integer.parseInt(args[2]));
-	        	break;*/	        
+	        	break;*/
+	        	
         	default:
         		System.out.println("Invalid input!");
         		break;

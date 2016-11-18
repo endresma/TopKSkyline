@@ -187,7 +187,7 @@ public class BenchWrite {
 	 * @param labels of x- and y-axis
 	 * @param title - additions to the titles of datFile and pltFile to distinguish the different files
 	 */
-	public static void writeValsToErrorbar(ArrayList<ArrayList<ArrayList<Object>>> vals, String path, String[] blockLabels, String[] data, String[] xylabels, String[] title){
+	public static void writeValsToErrorbar(ArrayList<ArrayList<ArrayList<Object>>> vals, String path, String[] blockLabels, String[] data, String[] xylabels, String[] title, boolean logscale){
 		StringBuffer toWrite;
 		GnuplotExporter gpx = null;
 
@@ -202,7 +202,7 @@ public class BenchWrite {
 			else{
 				//here you can plot!
 				//gpx = new GnuplotExporter(path, "datFile" + blockLabels[i], "pltFile", blockLabels, xylabels, title, "errorbar");
-				gpx = new GnuplotExporter("", "datFile" + blockLabels[i], "pltFile", blockLabels, xylabels, title, "errorbar");
+				gpx = new GnuplotExporter("", "datFile" + blockLabels[i], "pltFile", blockLabels, xylabels, title, "errorbar-"+logscale);
 			}
 						
 			toWrite = new StringBuffer();
