@@ -1,0 +1,36 @@
+static double sqr(double a)  //gibt quadrat zurueck
+
+static void padding_int() //Initialisiert speicher fuer array. Belegt es mit werten aus dem alphabet vor: abcabcabc
+
+static void padding_done()  //Speicher wieder freigeben
+
+static void stats_init(int dim)  //initialisierung der statistik arrays
+
+static void stats_enter(int dim, double *x)  //statistiken aus x array in dim kopieren
+
+static void stats_output(int dim)  //statistiken ausgeben
+
+static double random_equal(double min, double max) //einfach Zufallszah gleichverteilung?
+
+static double random_peak(double min, double max, int dim)  
+//sum of dim equally distributed random values
+
+static double random_normal(double med, double var) 
+
+static void output_vector(int dim, double *x)
+
+static int is_vector_ok(int dim, double *x)
+//boolean checking if vector is in [0,1]
+
+static void generate_indeep(int count, int dim)
+//generate count vectors independantly and equally distributed
+
+static void generate_corr(int count, int dim)
+//generate count vectors - correlated
+
+static void generate_anti(int count, int dim)
+//generate count vectors - anti
+
+
+
+
