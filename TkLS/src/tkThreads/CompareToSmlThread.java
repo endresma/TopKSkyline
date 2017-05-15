@@ -1,13 +1,12 @@
 package tkThreads;
 
-import extendedFLC.ExtendedFLC;
-//import extendedFLC.Score;
-import flatlc.levels.FlatLevelCombination;
-
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import dataGenerator.RandVector;
+import extended.ExtendedRandVector;
 
 
 public class CompareToSmlThread extends Thread{
@@ -25,6 +24,8 @@ public class CompareToSmlThread extends Thread{
 	protected ArrayList<Integer> level;
 	protected int index;
 	
+	
+	static boolean is = false;
 	//protected Score counter;
 	
 	public CompareToSmlThread(Object b, ArrayList<ArrayList<Object>> S_ml, int k, int mode, int threads){
@@ -57,16 +58,17 @@ public class CompareToSmlThread extends Thread{
 	
 	public void run(){
 		if(mode == 1 || mode == 2){
-			 runA((ExtendedFLC) b);
+			 runA((ExtendedRandVector) b);
 		}
 		else if(mode == 3 || mode == 4){
-			runB((FlatLevelCombination) b);
+			runB((RandVector) b);
 		}
 	}
 	
 	
-//Alg 3, line 2, for ExtendedFLC:	
-	protected void runA(ExtendedFLC a){
+//Alg 3, line 2, for ExtendedRandVector:	
+	protected void runA(ExtendedRandVector a){
+		
 //for j = 0 to k do	
 		outerFor:
 		for(int j = 0; j < k; j++){
@@ -83,8 +85,8 @@ public class CompareToSmlThread extends Thread{
 						
 						//counter.maxScore++;
 						
-						if((((ExtendedFLC)q).getFLC()).compare(a.getFLC()) == 1){
-//mark b as dominated					
+						if(((RandVector)q).compare(a.getRND()) == 1){
+//mark b as dominated		
 							a.setAdditionalData(1);
 							break innerFor;
 						}
@@ -97,7 +99,7 @@ public class CompareToSmlThread extends Thread{
 				ExecutorService pool = Executors.newFixedThreadPool(threads);
 //for all q in level S_ml[j] do					
 				for(Object q: S_ml.get(j)){
-					pool.execute(new CTSinner(mode, a, ((ExtendedFLC)q).getFLC()));
+					pool.execute(new CTSinner(mode, a, (RandVector) q));
 //if b is marked as dominated then						
 					if(a.getAdditionalData() == 1){
 //break inner for-loop
@@ -110,8 +112,10 @@ public class CompareToSmlThread extends Thread{
 				 }
 				 catch(InterruptedException e){
 					 System.out.println("Error while waiting for termination!");
-				 }				 
+				 }		
 			}
+			
+
 			
 			
 //if b is not marked as dominated then	
@@ -124,14 +128,14 @@ public class CompareToSmlThread extends Thread{
 	
 //if b is marked as dominated then	
 		if(a.getAdditionalData() == 1){
-//mark b as pruned			
+//mark b as pruned		
 			a.setAdditionalData(2);
 		}
 	}
 	
 	
 //Alg 3, line 2, for ArrayLists:
-	protected void runB(FlatLevelCombination a){
+	protected void runB(RandVector a){
 //protected void runB(ArrayList<Integer>a){
 //for j = 0 to k do	
 		outerFor:
@@ -150,7 +154,7 @@ public class CompareToSmlThread extends Thread{
 					
 					//counter.maxScore++;
 					
-					if(((FlatLevelCombination)q).compare(a) == 1){
+					if(((RandVector)q).compare(a) == 1){
 //if(TestDataGenerator.compare((ArrayList<Integer>)q, a) == 1){					
 //mark b as dominated	
 						additionalData.set(index, 1);
@@ -166,7 +170,7 @@ public class CompareToSmlThread extends Thread{
 //for all q in level S_ml[j] do				
 				for(Object q: S_ml.get(j)){
 //if q <_pareto b then
-					pool.execute(new CTSinner(mode, a, additionalData, (FlatLevelCombination)q, index));
+					pool.execute(new CTSinner(mode, a, additionalData, (RandVector)q, index));
 //if b is marked as dominated then						
 					if(additionalData.get(index) == 1){						
 //break inner for-loop

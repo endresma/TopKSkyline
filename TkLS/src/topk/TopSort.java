@@ -17,11 +17,11 @@
 
 package topk;
 
-import flatlc.levels.FlatLevelCombination;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import dataGenerator.RandVector;
 
 
 public class TopSort {
@@ -32,26 +32,19 @@ public class TopSort {
      *
      * @param data
      */
-    public static void sort(List<Object> data) {
+	public static void sort(List<Object> data) {
 
         Comparator entropyComparator = new Comparator() {
             @Override
             public int compare(Object o1, Object o2) {
 
-                FlatLevelCombination flc_o1 = (FlatLevelCombination) o1;
-                FlatLevelCombination flc_o2 = (FlatLevelCombination) o2;
+                RandVector rnd_o1 = (RandVector) o1;
+                RandVector rnd_o2 = (RandVector) o2;
 
-                float e1 = entropy(flc_o1);
-                float e2 = entropy(flc_o2);
+                double e1 = entropy(rnd_o1);
+                double e2 = entropy(rnd_o2);
 
-                if (e1 < e2)
-                    return -1;
-                else if (e1 > e2)
-                    return 1;
-                else // e1 == e2
-                    return 0;
-
-
+                return Double.compare(e1, e2);
             }
         };
 
@@ -61,9 +54,9 @@ public class TopSort {
     }
 
 
-    private static float entropy(FlatLevelCombination flc) {
-        int[] t = flc.getLevelCombination();
-        float e = 0;
+    private static double entropy(RandVector rnd) {
+        double[] t = rnd.getValues();
+        double e = 0;
 
 
         // E(t) = \sum_{i=1}^k ln(t[a_i] + 1)

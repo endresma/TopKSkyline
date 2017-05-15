@@ -17,138 +17,129 @@
 
 package topk;
 
-
-import flatlc.levels.FlatLevelCombination;
-import util.IPreference;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * User: endresma
- * ESFS algorithm for Top-k computation as described in Brando, Goncalves, Gonzalez:
- * Evaluating Top-k Skyline Queries over Relational Databases
+ * User: endresma ESFS algorithm for Top-k computation as described in Brando,
+ * Goncalves, Gonzalez: Evaluating Top-k Skyline Queries over Relational
+ * Databases
  * <p/>
  * ESFS exploits some kind of pre-sorting of the data.
  */
 public class ESFSTopK extends EBNLTopK {
 
-	
-	
-    public ESFSTopK(ArrayList<Object> R, int topK) {
-        super(R, topK);
+	public ESFSTopK(ArrayList<Object> R, int topK) {
+		super(R, topK);
 
-    }
+	}
 
+	/**
+	 * no tuple t1 from w dominates t
+	 */
+	// this test has already been done by dom1
+	/*
+	 * protected boolean dom3(Object t, ArrayList<Object> w) {
+	 * 
+	 * FlatLevelCombination flc_t = (FlatLevelCombination) t; for (Object t3 :
+	 * w) { FlatLevelCombination flc_t3 = (FlatLevelCombination) t3;
+	 * 
+	 * //counter.maxScore++;
+	 * 
+	 * int compare = flc_t.compare(flc_t3); // int compare =
+	 * preference.compare(t, t3, null); // t3 is better than t, i.e. t is worse
+	 * than t3 if (compare == IPreference.LESS) { return false; } }
+	 * 
+	 * return true;
+	 * 
+	 * }
+	 */
 
-    /**
-     * no tuple t1 from w dominates t
-     */
-    protected boolean dom3(Object t, ArrayList<Object> w) {
+	protected void compute() {
 
-        FlatLevelCombination flc_t = (FlatLevelCombination) t;
-        for (Object t3 : w) {
-            FlatLevelCombination flc_t3 = (FlatLevelCombination) t3;
-            
-            //counter.maxScore++;
-            
-            int compare = flc_t.compare(flc_t3);
-            //            int compare = preference.compare(t, t3, null);
-            // t3 is better than t, i.e. t is worse than t3
-            if (compare == IPreference.LESS) {
-                return false;
-            }
-        }
+		int i = 0;
+		int count = 0;
+		// int idx = 0;
 
-        return true;
+		// topological sort following Godfrey: Skyline with Presorting
+		TopSort.sort(R);
 
-    }
+		boolean cont;
+		ArrayList<List<Object>> P = new ArrayList<>();
 
-    protected void compute() {
+		// try {
+		loop: while (count < topK && !R.isEmpty()) {
+			// initialize Pi = \emptyset
+			P.add(i, new ArrayList<>());
+			cont = true;
+			ArrayList<Object> R1 = new ArrayList<>();
 
-        int i = 0;
-        int count = 0;
-        //        int idx = 0;
+			ArrayList<Object> w = new ArrayList<>();
+			while (cont) {
+				// get first tuple t from R
+				Object t = R.remove(0);
 
-        // topological sort following Godfrey: Skyline with Presorting
-        TopSort.sort(R);
+				// while (k < Rsize) {
+				while (!R.isEmpty() || t != null) {
 
-        boolean cont;
-        ArrayList<List<Object>> P = new ArrayList<>();
+					// line 10
 
-        //        try {
-        while (count < topK && !R.isEmpty()) {
-            // initialize Pi = \emptyset
-            P.add(i, new ArrayList<>());
-            cont = true;
-            ArrayList<Object> R1 = new ArrayList<>();
+					// if some tuple t1 from w dominates t then
+					if (dom1(t, w)) {
+						// t is inserted into the temporal table R1
+						R1.add(t);
+					} else // if no tuple t1 from w dominates t and there is
+							// enough room in w then
+						// if (dom3(t, w)) {
+						// // t is inserted into the window w
+						// w.add(t);
+						// }
+						w.add(t);
+					// else if no t1 from w dominates t and there is not enough
+					// room in w then
+					// t is inserted into a temporal table R2
 
-            ArrayList<Object> w = new ArrayList<>();
-            while (cont) {
-                // get first tuple t from R
-                Object t = R.remove(0);
+					// line 19
 
-                //                    while (k < Rsize) {
-                while (!R.isEmpty() || t != null) {
+					// get the next tuple t from R
+					if (R.isEmpty())
+						t = null;
+					else
+						t = R.remove(0);
 
+				} // end while
 
-                    // line 10
+				// if exist tuples in R2 then
+				// R = R2;
+				// else
+				cont = false;
+				// end if
+			} // end while
 
-                    // if some tuple t1 from w dominates t then
-                    if (dom1(t, w)) {
-                        // t is inserted into the temporal table R1
-                        R1.add(t);
-                    } else // if no tuple t1 from w dominates t and there is enough room in w then
-                        if (dom3(t, w)) {
-                            // t is inserted into the window w
-                            w.add(t);
-                        }
-                    //  else if no t1 fromw dominates t and there is not enough room in w then
-                    // t is inserted into a temporal table R2
+			// evaluate f for all tuples in w; copy tuples from w to Pi
+			P.get(i).addAll(w);
+			w.clear();
 
-                    // line 19
+			int sizePi = P.get(i).size();
+			count = count + sizePi;
+			if (count >= topK)
+				break;
 
+			++i;
+			R = R1;
+		}
 
-                    // get the next tuple t from R
-                    if (R.isEmpty())
-                        t = null;
-                    else
-                        t = R.remove(0);
+		topKResults(P);
 
-                } // end while
-
-                // if exist tuples in R2 then
-                // R = R2;
-                // else
-                cont = false;
-                // end if
-            } // end while
-
-            // evaluate f for all tuples in w; copy tuples from w to Pi
-            P.get(i).addAll(w);
-            w.clear();
-
-            int sizePi = P.get(i).size();
-            count = count + sizePi;
-            if (count >= topK)
-                break;
-            ++i;
-            R = R1;
-
-        }
-
-        ArrayList<Object> topk_result = new ArrayList<>();
-
-        for (List<Object> out : P) {
-            TopSort.sort(out);
-            for (Object t : out) {
-                topk_result.add(t);
-            }
-        }
-
-        result = topk_result.iterator();
-        //System.out.println("Final Counter of ESFS: " + counter.maxScore);
-    }
-
+		/*
+		 * ArrayList<Object> topk_result = new ArrayList<>();
+		 * 
+		 * for (List<Object> out : P) { TopSort.sort(out); for (Object t : out)
+		 * { topk_result.add(t); } }
+		 * 
+		 * result = topk_result.iterator();
+		 */
+		// System.out.println("Final Counter of ESFS: " + counter.maxScore);
+	}
 
 }

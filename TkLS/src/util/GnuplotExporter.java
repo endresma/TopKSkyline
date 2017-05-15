@@ -17,10 +17,12 @@
 
 package util;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class GnuplotExporter {
 
@@ -42,7 +44,9 @@ public class GnuplotExporter {
             } else {
             	VIEWER = LINUX_VIEWER;
                 GNUPLOT = LINUX_GNUPLOT;
-            	//VIEWER = "";
+//            	VIEWER = "";
+//                GNUPLOT = "C:/Program Files/gnuplot/bin/gnuplot.exe";
+//            	VIEWER = "";
                 //GNUPLOT = "C:/Tests/gnuplot/bin/wgnuplot.exe";
             }
     }
@@ -77,6 +81,10 @@ public class GnuplotExporter {
      */
     private String ylabel = "y";
     /**
+     * Keys of the graph
+     */
+    private String[] keys;
+    /**
      * title of the diagram
      */
     private String diaTitle = "";
@@ -85,6 +93,7 @@ public class GnuplotExporter {
 
     // BufferedWriter
     private BufferedWriter datOut, pltOut;
+  
 
     /**
      * @param path
@@ -93,6 +102,7 @@ public class GnuplotExporter {
      * @param labels
      * @param xylabels
      * @param title
+     * @param useTkls
      */
     public GnuplotExporter(String path, String datFileName, String pltFileName, String[] labels, String[] xylabels, String[] title, String type) {
 
@@ -106,9 +116,9 @@ public class GnuplotExporter {
         this.datFile = new File(datFileName + diaTitle);
         this.pltFile = new File(pltFileName + diaTitle);
 
-        
         this.labels = labels;
         this.title = title;
+        this.keys = new String[]{};
         if (xylabels != null) {
             this.xlabel = xylabels[0];
             this.ylabel = xylabels[1];
@@ -122,7 +132,6 @@ public class GnuplotExporter {
 	        	writePltFile();
 	        	break;
 	        case "box":
-	        	System.out.println("Box!");
 	        	writeBoxFile();
 	        	break;
 	        case "partly rowstacked":
@@ -135,7 +144,9 @@ public class GnuplotExporter {
 	        	break;	
         }
     }
+    
 
+    
     /**
      * create files
      */
@@ -228,15 +239,13 @@ public class GnuplotExporter {
 
             //pltOut.write("set key left");
             //pltOut.newLine();
-            
-            pltOut.write("set xtics rotate by -45 ;");
-    		pltOut.newLine();
 
             pltOut.write("set pointsize 2");
             pltOut.newLine();
 
             pltOut.write("set datafile missing '?'");
             pltOut.newLine();
+           
     	}
     	catch(IOException e){
     		printException(e);
@@ -250,6 +259,8 @@ public class GnuplotExporter {
     		setStuff();
     		pltOut.newLine();
     		
+            pltOut.write("set xtics rotate by -45");
+    		pltOut.newLine();
     		pltOut.write("set boxwidth 0.75 absolute");
     		pltOut.newLine();
     		pltOut.write("set style fill solid 0.5");
@@ -284,7 +295,7 @@ public class GnuplotExporter {
     					+ " index " + i + " u 2:xtic(1) notitle, '' index " + i + " u 3 notitle, '' index "+ i + " u 4 notitle, '' index " + i + " u 5 notitle, '' index " + i + " u 6 notitle");
     			}  			
     			
-    			if(i < labels.length){
+    			if(i < labels.length-1){
     				pltOut.write(", ");
     			}
     		}
@@ -318,7 +329,7 @@ public class GnuplotExporter {
     		
     		//labels: algorithms (ebnl, esfs, tkls, sequential, parallel)
     		
-    		String color[] = new String[]{"brown", "red", "purple", "blue", "green", "grey"};
+    		String color[] = new String[]{"black", "red", "blue", "green", "purple", "grey"};
     		
     		for(int i = 0; i < labels.length; i++){
     			   			
@@ -344,7 +355,10 @@ public class GnuplotExporter {
     	try{
 
     		setStuff(); 		
-    		
+            pltOut.write("set xtics rotate by -45");
+    		pltOut.newLine();
+    		pltOut.write("set key outside");
+    		pltOut.newLine();
     		pltOut.write("set boxwidth 0.75 absolute");
     		pltOut.newLine();
     		pltOut.write("set style fill solid 0.5");
@@ -352,21 +366,21 @@ public class GnuplotExporter {
     		pltOut.write("set style histogram rowstacked");
     		pltOut.newLine();
     		pltOut.write("set style data histograms");
-    		pltOut.newLine();
-    		//pltOut.write("set offset 0,2,0,0");
-    		//pltOut.newLine(); 		
+    		pltOut.newLine();		
     		
     		pltOut.write("plot ");
+    		
+    		String color[] = new String[]{"#BF00FF", "#00FF00", "#013ADF", "#FF0000", "#F7FE2E", "#BDBDBD"};
 
     		for (int i = 0; i < labels.length; i++) {
     			
     			if(i == 0){
-    				pltOut.write("\"" + path + datFile + "\" using 2:xtic(1) title \"Init\", '' using 3 title \"Phase1\", '' using 4 title \"Phase2\", '' using 5 title \"Phase3\", '' using 6 title \"Rest\"");
+    				pltOut.write("\"" + path + datFile + "\" using 2:xtic(1) title \"Init\" lt rgb '"+color[0]+"', '' using 3 title \"Phase1\" lt rgb '"+color[1]+"', '' using 4 title \"Phase2\" lt rgb '"+color[2]+"', '' using 5 title \"Phase3\" lt rgb '"+color[3]+"', '' using 6 title \"Rest\" lt rgb '"+color[4]+"'");
     			}
     			else{
     				pltOut.write("\"" + path + datFile + "\" using 2:xtic(1) notitle, '' using 3 notitle, '' using 4 notitle, '' using 5 notitle, '' using 6 notitle");
     			}
-    			if(i < labels.length){
+    			if(i < labels.length-1){
     				pltOut.write(", ");
     			}
     		}
@@ -382,6 +396,9 @@ public class GnuplotExporter {
         try {
             setStuff();
             
+            pltOut.write("set xtics rotate by -45");
+    		pltOut.newLine();
+    		
             pltOut.write("set style data histogram");
             pltOut.newLine();
             
@@ -405,8 +422,7 @@ public class GnuplotExporter {
             printException(e);
         }
     }
-    
-    
+        
     /**
      * write some meta data, additional information, to a separate file
      *
@@ -456,7 +472,26 @@ public class GnuplotExporter {
 
             String gnu = GNUPLOT + " " + path + pltFile;
             
-            Runtime.getRuntime().exec(gnu);
+            Process proc = Runtime.getRuntime().exec(gnu);
+            
+            BufferedReader stdInput = new BufferedReader(new 
+            	     InputStreamReader(proc.getInputStream()));
+
+            	BufferedReader stdError = new BufferedReader(new 
+            	     InputStreamReader(proc.getErrorStream()));
+
+            	// read the output from the command
+            	System.out.println("Here is the standard output of the command:\n");
+            	String s = null;
+            	while ((s = stdInput.readLine()) != null) {
+            	    System.out.println(s);
+            	}
+
+            	// read any errors from the attempted command
+            	System.out.println("Here is the standard error of the command (if any):\n");
+            	while ((s = stdError.readLine()) != null) {
+            	    System.out.println(s);
+            	}
 
         } catch (IOException e) {
             System.err.println(e.getMessage());
