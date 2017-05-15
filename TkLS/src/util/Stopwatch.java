@@ -33,6 +33,7 @@ public class Stopwatch {
     public Stopwatch() {
         this.startTime = System.nanoTime();
     }
+   
 
     /**
      * Return elapsed time in nano seconds.
@@ -40,27 +41,29 @@ public class Stopwatch {
      * @return
      */
     public long getElapsedNanoSecTime() {
-        long now = System.nanoTime();
+    	long now = System.nanoTime();
         return (now - startTime);
     }
 
     /**
-     * Return elapsed time in milli seconds.
+     * Return elapsed Time in milli seconds.
      *
      * @return
      */
-    public double getElapsedMillSecTime() {
-        return this.getElapsedNanoSecTime() / 1000. / 1000.;
+    public double getElapsedMilliSecTime() {
+    	return this.getElapsedNanoSecTime() / 1000. / 1000.;
     }
 
+
     /**
-     * Return elapsed Time in seconds.
+     * Return elapsed time in seconds.
      *
      * @return
      */
     public double getElapsedSecTime() {
-        return this.getElapsedMillSecTime() / 1000;
+    	return this.getElapsedMilliSecTime() / 1000;
     }
+
 
 
 }
