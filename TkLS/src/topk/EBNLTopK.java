@@ -17,227 +17,223 @@
 
 package topk;
 
-
-import flatlc.levels.FlatLevelCombination;
-import util.IPreference;
-
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
-import extendedFLC.Score;
+import dataGenerator.RandVector;
+import util.IPreference;
 
 /**
- * User: endresma
- * EBNL algorithm for Top-k computation as described in Brando, Goncalves, Gonzalez:
- * Evaluating Top-k Skyline Queries over Relational Databases
+ * User: endresma EBNL algorithm for Top-k computation as described in Brando,
+ * Goncalves, Gonzalez: Evaluating Top-k Skyline Queries over Relational
+ * Databases
  * <p/>
  * Quick and dirty implementation, could be optimized.
  */
-public class EBNLTopK implements Iterator {
+public class EBNLTopK /* implements Iterator */ {
 
-    //    protected final ParetoPreference preference;
-    protected final int topK;
-    protected int topk_counter = 0;
-    protected ArrayList<Object> R;
-    protected Iterator result;
+	// protected final ParetoPreference preference;
+	protected final int topK;
+	protected int topk_counter = 0;
+	protected ArrayList<Object> R;
+	protected ArrayList<Object> result;
+	// protected Iterator result;
 
-    //protected Score counter;
+	// protected Score counter;
 
-    public EBNLTopK(ArrayList<Object> R, int topK) {
+	public EBNLTopK(ArrayList<Object> R, int topK) {
 
-        this.R = R;
-         //        this.preference = preference;
-        this.topK = topK;
-        //this.counter = new Score();
-        //counter.maxScore = 0;
-        compute();
-    }
+		this.R = R;
+		// this.preference = preference;
+		this.topK = topK;
+		// this.counter = new Score();
+		// counter.maxScore = 0;
+		compute();
+	}
 
+	/**
+	 * if some tuple t1 from w dominates t
+	 *
+	 * @return
+	 */
+	protected boolean dom1(Object t, ArrayList<Object> w) {
+		RandVector rnd_t = (RandVector) t;
 
-    /**
-     * if some tuple t1 from w dominates t
-     *
-     * @return
-     */
-    protected boolean dom1(Object t, ArrayList<Object> w) {
-        FlatLevelCombination flc_t = (FlatLevelCombination) t;
+		for (Object t1 : w) {
+			RandVector rnd_t1 = (RandVector) t1;
+			// int compare = preference.compare(t, t1, null);
 
-        for (Object t1 : w) {
-            FlatLevelCombination flc_t1 = (FlatLevelCombination) t1;
-            //            int compare = preference.compare(t, t1, null);
-            
-            //counter.maxScore++;
-            
-            int compare = flc_t.compare(flc_t1);
-            // t is worse than t1
-            if (compare == IPreference.LESS) {
-                return true;
-            }
-        }
+			// counter.maxScore++;
 
-        return false;
-    }
+			int compare = rnd_t.compare(rnd_t1);
+			// t is worse than t1
+			if (compare == IPreference.LESS) {
+				return true;
+			}
+		}
 
-    /**
-     * if t dominates some tuples from w
-     */
-    protected boolean dom2(Object t, ArrayList<Object> w) {
-        FlatLevelCombination flc_t = (FlatLevelCombination) t;
-        for (Object t2 : w) {
-            FlatLevelCombination flc_t2 = (FlatLevelCombination) t2;
-            
-            //counter.maxScore++;
-            
-            int compare = flc_t.compare(flc_t2);
-            //            int compare = preference.compare(t, t2, null);
-            // t is better than t2
-            if (compare == IPreference.GREATER) {
-                return true;
-            }
-        }
+		return false;
+	}
 
-        return false;
+	/**
+	 * if t dominates some tuples from w
+	 */
+	protected boolean dom2(Object t, ArrayList<Object> w) {
+		RandVector rnd_t = (RandVector) t;
+		for (Object t2 : w) {
+			RandVector rnd_t2 = (RandVector) t2;
 
-    }
+			// counter.maxScore++;
 
+			int compare = rnd_t.compare(rnd_t2);
+			// int compare = preference.compare(t, t2, null);
+			// t is better than t2
+			if (compare == IPreference.GREATER) {
+				return true;
+			}
+		}
 
-    protected void compute() {
+		return false;
 
-        int i = 0;
-        int count = 0;
+	}
 
-        boolean cont;
-        ArrayList<List<Object>> P = new ArrayList<>();
+	protected void compute() {
 
-        //        try {
-        while (count < topK && !R.isEmpty()) {
-            // initialize Pi = \emptyset
-            P.add(i, new ArrayList<>());
-            cont = true;
-            ArrayList<Object> R1 = new ArrayList<>();
+		int i = 0;
+		int count = 0;
 
-            //                int Rsize = R.size();
-            ArrayList<Object> w = new ArrayList<>();
-            while (cont) {
-                // get first tuple t from R
-                //                    int k = 0;
-                Object t = R.remove(0);
+		boolean cont;
+		ArrayList<List<Object>> P = new ArrayList<>();
 
-                //                    while (k < Rsize) {
-                while (!R.isEmpty() || t != null) {
+		// try {
+		loop: while (count < topK && !R.isEmpty()) {
+			// initialize Pi = \emptyset
+			P.add(i, new ArrayList<>());
+			cont = true;
+			ArrayList<Object> R1 = new ArrayList<>();
 
-                    // line 10
+			// int Rsize = R.size();
+			ArrayList<Object> w = new ArrayList<>();
+			while (cont) {
+				// get first tuple t from R
+				// int k = 0;
+				Object t = R.remove(0);
 
-                    // begin if
-                    // if some tuple t1 from w dominates t
-                    if (dom1(t, w)) {
-                        R1.add(t);
+				// while (k < Rsize) {
+				while (!R.isEmpty() || t != null) {
 
-                    } // if t dominates some tuples from w
-                    else if (dom2(t, w)) {
-                        w.add(t);
-                        // delete dominated tuple from w and insert them into R1
+					// line 10
 
-                        ArrayList<Object> tmp = new ArrayList<>();
-                        FlatLevelCombination flc_t = (FlatLevelCombination) t;
-                        for (Object v : w) {
-                            FlatLevelCombination flc_v = (FlatLevelCombination) v;
-                            
-                            //counter.maxScore++;
-                            
-                            int compare = flc_t.compare(flc_v);
-                            //                            int compare = preference.compare(t, v, null);
-                            // t is better than v
-                            if (compare == IPreference.GREATER) {
-                                //                                    w.remove(v);
-                                tmp.add(v);
-                                R1.add(v);
-                            }
-                        }
+					// begin if
+					// if some tuple t1 from w dominates t
+					if (dom1(t, w)) {
+						R1.add(t);
 
-                        w.removeAll(tmp);
+					} // if t dominates some tuples from w
+					else if (dom2(t, w)) {
+						w.add(t);
+						// delete dominated tuple from w and insert them into R1
 
-                    } // if no tuple t1 from w dominates t and there is enough room in w then
-                    else {
-                        w.add(t);
-                    }
+						ArrayList<Object> tmp = new ArrayList<>();
+						RandVector rnd_t = (RandVector) t;
+						for (Object v : w) {
+							RandVector rnd_v = (RandVector) v;
 
-                    // else if no tuple t1 from w dominates t and there is NOT enough room in w then
-                    // t is inserted into a temporal table R2
-                    // end if
+							// counter.maxScore++;
 
-                    // line 19
+							int compare = rnd_t.compare(rnd_v);
+							// int compare = preference.compare(t, v, null);
+							// t is better than v
+							if (compare == IPreference.GREATER) {
+								// w.remove(v);
+								tmp.add(v);
+								R1.add(v);
+							}
+						}
 
+						w.removeAll(tmp);
 
-                    // get the next tuple t from R
-                    if (R.isEmpty())
-                        t = null;
-                    else
-                        t = R.remove(0);
-                    //                        else R.clear();
+					} // if no tuple t1 from w dominates t and there is enough
+						// room in w then
+					else {
+						w.add(t);
+					}
 
-                } // end while
+					// else if no tuple t1 from w dominates t and there is NOT
+					// enough room in w then
+					// t is inserted into a temporal table R2
+					// end if
 
-                // if exist tuples in R2 then
-                // R = R2;
-                // else
-                cont = false;
-                // end if
-            } // end while
+					// line 19
 
-            // evaluate f for all tuples in w; copy tuples from w to Pi
-            P.get(i).addAll(w);
-            w.clear();
+					// get the next tuple t from R
+					if (R.isEmpty())
+						t = null;
+					else
+						t = R.remove(0);
+					// else R.clear();
 
-            int sizePi = P.get(i).size();
-            count = count + sizePi;
-            if (count >= topK)
-                break;
+				} // end while
 
-            ++i;
-            R = R1;
+				// if exist tuples in R2 then
+				// R = R2;
+				// else
+				cont = false;
+				// end if
+			} // end while
 
-        } // end while
+			// evaluate f for all tuples in w; copy tuples from w to Pi
+			P.get(i).addAll(w);
+			w.clear();
 
-        ArrayList<Object> topk_result = new ArrayList<>();
+			int sizePi = P.get(i).size();
+			count = count + sizePi;
+			if (count >= topK)
+				break;
 
-        for (List<Object> out : P) {
-            TopSort.sort(out);
-            for (Object t : out) {
-                topk_result.add(t);
-            }
-        }
+			++i;
+			R = R1;
 
-        result = topk_result.iterator();
-        //System.out.println("Final counter of EBNL: " + counter.maxScore);
-    }
+		} // end while
 
+		topKResults(P);
 
-    @Override
-    public boolean hasNext() {
-        if (result == null) {
-            compute();
-        }
-        if (topk_counter < topK && result.hasNext()) {
-            ++topk_counter;
-            return true;
-        }
+		// result = topk_result.iterator();
+		// System.out.println("Final counter of EBNL: " + counter.maxScore);
+	}
 
-        return false;
-    }
+	protected void topKResults(ArrayList<List<Object>> P) {
+		// initialize result
+		result = new ArrayList<Object>(topK);
+		// add first k elements from S_ml to result
+		outerLoop: for (List<Object> out : P) {
+			TopSort.sort(out);
+			for (Object t : out) {
+				if (result.size() < topK)
+					result.add(t);
+				else
+					break outerLoop;
+			}
+		}
+	}
 
-    @Override
-    public Object next() {
-        return result.next();
-    }
+	public ArrayList<Object> getResult() {
+		return result;
+	}
 
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException("remove not supported");
-
-    }
+	/*
+	 * @Override public boolean hasNext() { if (result == null) { compute(); }
+	 * if (topk_counter < topK && result.hasNext()) { ++topk_counter; return
+	 * true; }
+	 * 
+	 * return false; }
+	 * 
+	 * @Override public Object next() { return result.next(); }
+	 * 
+	 * @Override public void remove() { throw new
+	 * UnsupportedOperationException("remove not supported");
+	 * 
+	 * }
+	 */
 
 }
