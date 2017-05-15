@@ -1,15 +1,16 @@
 package tkThreads;
 
-import extendedFLC.ExtendedFLC;
-import flatlc.levels.FlatLevelCombination;
 import java.util.ArrayList;
+
+import dataGenerator.RandVector;
+import extended.ExtendedRandVector;
 
 public class CTPinner extends Thread{
 
+	protected Object a;
 	protected Object b;
-	protected Object q;
 	protected ArrayList<Integer> additionalData;
-	protected ArrayList<Integer> dominators;
+	protected ArrayList<ArrayList<Integer>> dominators;
 	protected ArrayList<Integer> level;
 	protected int index;
 	protected int j;
@@ -17,9 +18,9 @@ public class CTPinner extends Thread{
 	protected int mode;
 	
 	
-	public CTPinner(int mode, Object b, Object q, ArrayList<Integer> additionalData, ArrayList<Integer> dominators, ArrayList<Integer> level, int index, int j, int k){
+	public CTPinner(int mode, Object a, Object b, ArrayList<Integer> additionalData, ArrayList<ArrayList<Integer>> dominators, ArrayList<Integer> level, int index, int j, int k){
+		this.a = a;
 		this.b = b;
-		this.q = q;
 		this.additionalData = additionalData;
 		this.dominators = dominators;
 		this.level = level;
@@ -30,9 +31,9 @@ public class CTPinner extends Thread{
 	}
 	
 	
-	public CTPinner(int mode, Object b, Object q, int k){
+	public CTPinner(int mode, Object a, Object b, int k){
+		this.a = a;
 		this.b = b;
-		this.q = q;
 		this.k = k;
 		this.mode = mode;
 	}
@@ -40,12 +41,12 @@ public class CTPinner extends Thread{
 	
 	public void run(){
 		
-		//ExtendedFLC
+		//ExtendedRandVector
 		if(mode == 2){			
 			runA();
 		}
 		
-		//FLC + ArrayLists
+		//RandVector + ArrayLists
 		else if (mode == 4){
 			runB();
 		}
@@ -56,17 +57,17 @@ public class CTPinner extends Thread{
 	}
 
 	
-//ExtendedFLC	
+//ExtendedRandVector	
 	private void runA(){
-		ExtendedFLC q = (ExtendedFLC)this.q;
-		ExtendedFLC b = (ExtendedFLC)this.b;			
+		ExtendedRandVector a = (ExtendedRandVector)this.a;
+		ExtendedRandVector b = (ExtendedRandVector)this.b;			
 //if B[j] <_pareto b then			
-		if(q.getFLC().compare(b.getFLC()) == 1){
-			if(q.getLevel() == k - 1){
-				b.setAdditionalData(2);					
+		if(b.getRND().compare(a.getRND()) == 1){
+			if(b.getLevel() == k - 1){
+				a.setAdditionalData(2);					
 			}
 			else{		
-				b.addDominator(q.getLevel());				
+				a.addDominator(b);				
 			}
 		}
 	}
@@ -75,14 +76,12 @@ public class CTPinner extends Thread{
 //ArrayLists	
 	private void runB(){
 //if B[j] <_pareto b then		
-		if(((FlatLevelCombination)q).compare((FlatLevelCombination)b) == 1){			
-			if(level.get(index) == k-1){						
+		if(((RandVector)b).compare((RandVector)a) == 1){			
+			if(level.get(j) == k-1){						
 				additionalData.set(index, 2);
 			}
 			else{					
-				if(level.get(j) > dominators.get(index)){
-					dominators.set(index, level.get(j));
-				}				
+				dominators.get(index).add(j);			
 			}
 		}
 	}

@@ -2,19 +2,19 @@ package tkThreads;
 
 import java.util.ArrayList;
 
-import extendedFLC.ExtendedFLC;
-import flatlc.levels.FlatLevelCombination;
+import dataGenerator.RandVector;
+import extended.ExtendedRandVector;
 
 public class CTSinner extends Thread{
 
 	protected Object b;
 	protected ArrayList<Integer> additionalData;
-	protected FlatLevelCombination q;
+	protected RandVector q;
 	protected int index;
 	protected int mode;
 	
 	
-	public CTSinner(int mode, Object b, ArrayList<Integer> additionalData, FlatLevelCombination q, int index){
+	public CTSinner(int mode, Object b, ArrayList<Integer> additionalData, RandVector q, int index){
 		this.b = b;
 		this.additionalData = additionalData;
 		this.q = q;
@@ -23,7 +23,7 @@ public class CTSinner extends Thread{
 	}
 	
 	
-	public CTSinner(int mode, Object b, FlatLevelCombination q){
+	public CTSinner(int mode, Object b, RandVector q){
 		this.b = b;
 		this.q = q;
 		this.mode = mode;
@@ -32,19 +32,19 @@ public class CTSinner extends Thread{
 	
 	public void run(){
 		
-		//using ExtendedFLC
+		//using ExtendedRandVector
 		if(mode == 2){
 //if q <_pareto b then				
-			if(q.compare(((ExtendedFLC)b).getFLC()) == 1){
+			if(q.compare(((ExtendedRandVector)b).getRND()) == 1){
 //mark b as dominated
-				((ExtendedFLC)b).setAdditionalData(1);
+				((ExtendedRandVector)b).setAdditionalData(1);
 			}
 		}
 		
 		//using ArrayLists
 		else if(mode == 4){
 //if q <_pareto b then			
-			if(q.compare((FlatLevelCombination)b) == 1){
+			if(q.compare((RandVector)b) == 1){
 //mark b as dominated				
 				additionalData.set(index, 1);
 			}
