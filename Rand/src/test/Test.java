@@ -1,3 +1,7 @@
+package test;
+
+import dataGenerator.GenerateAnti;
+
 /**
  * Created by Viechle on 18.12.2016.
  */
@@ -13,6 +17,6 @@ public class Test {
 		*/
 		
 		//Example
-        GenerateAnti test = new GenerateAnti(100, 5, null, new Integer(30), null);
+        GenerateAnti test = new GenerateAnti(10, 3, null, new Integer(30), 1);
     }
 }

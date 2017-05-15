@@ -1,3 +1,4 @@
+package dataGenerator;
 /**
  * Created by Viechle on 18.12.2016.
  */
@@ -11,7 +12,7 @@ public class GenerateIndep extends RandomDataGenerator{
         super.generateSqlTable(dist);
         super.generateSqlCopy();
         generateMatrix();
-        super.output_vector();
+//        super.output_vector();
     }
 
     public void generateMatrix(){

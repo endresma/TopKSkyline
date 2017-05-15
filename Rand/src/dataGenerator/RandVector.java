@@ -1,9 +1,17 @@
+package dataGenerator;
 import java.util.Random;
 
 /**
  * Created by Viechle on 18.12.2016.
  */
-public class RandVector {
+public class RandVector{
+	
+    public static final int EQUAL = 0;
+    public static final int GREATER = 1;
+    public static final int LESS = -1;
+    public static final int SUBSTITUTABLE = 2;
+    @Deprecated
+    public static final int UNRANKED = -2;
 
     int id;
     int dim;
@@ -16,6 +24,11 @@ public class RandVector {
         this.dim = d;
         values = new double[dim];
 
+    }
+    
+    public RandVector(double[] values){
+    	this(values.length);
+    	this.values = values;
     }
 
     void generate_indep(int dim){
@@ -117,4 +130,69 @@ public class RandVector {
             padding = padInit.substring(offset, offset + padLen);
         }
     }
+    
+    public double[] getValues(){
+    	return values;
+    }
+
+
+	public int compare(RandVector o) {
+		 int result = SUBSTITUTABLE;
+		 double[] vals1 = this.getValues();
+		 double[] vals2 = o.getValues();
+	        for (int i = 0; i < vals1.length; i++) {
+				if (Double.compare(vals1[i],vals2[i]) < 0) {
+	                // this is better in the current base preference
+	                if (result == LESS) {
+	                    // at least once worse and now better: unranked
+	                    return UNRANKED;
+	                }
+	                result = GREATER;
+	            } else if (Double.compare(vals1[i], vals2[i]) > 0) {
+	                // this is worse in the current base preference
+	                if (result == GREATER) {
+	                    // at least once better and now worse: unranked
+	                    return UNRANKED;
+	                }
+	                result = LESS;
+	            }
+	        }
+	        return result;
+	}
+	
+	@Override
+	public String toString(){
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("[");
+		for(int i=0; i < values.length; i++){
+			buffer.append(values[i]);
+			if(i < values.length-1)
+				buffer.append(", ");
+		}
+		buffer.append("]");
+		return buffer.toString();
+	}
+	
+	@Override
+	public boolean equals(Object obj){
+		
+		 if (obj == null || !(obj instanceof RandVector))
+		        return false;
+		   
+		    final RandVector rnd = (RandVector) obj;
+		    
+		    if(rnd.values.length != this.values.length)
+		    	return false;
+		    
+		   	boolean isEquals = false;
+		    for(int i=0; i < rnd.values.length; i++){
+		    	if(Double.compare(this.values[i], rnd.values[i]) != 0){
+		    		isEquals = false;
+		    		break;
+		    	}else{
+		    		isEquals = true;
+		    	}
+		    }
+		return isEquals;
+	}
 }

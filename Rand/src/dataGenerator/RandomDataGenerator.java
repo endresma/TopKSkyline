@@ -1,3 +1,4 @@
+package dataGenerator;
 /**
  * Created by Viechle on 16.12.2016.
  */
@@ -161,7 +162,11 @@ public abstract class RandomDataGenerator {
         }
 
     }
-
+   
+    public RandVector[] getRandVector(){
+    	return data;
+    }
+    
     abstract void generateMatrix();
 }
 
